@@ -576,6 +576,53 @@
     .phase-plan-row.completed .phase-step-badge {
       background: var(--success, #15803d);
     }
+    .step-guide-box {
+      border: 1px solid var(--border);
+      background: var(--surface-alt);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+    }
+    .step-guide-item {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 8px 0;
+      border-bottom: 1px dashed var(--border);
+      font-size: 0.87rem;
+      line-height: 1.45;
+    }
+    .step-guide-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    .step-guide-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      background: var(--primary);
+      color: #fff;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-top: 2px;
+    }
+    .inline-timers-box {
+      border: 1px solid var(--border);
+      background: var(--surface-alt);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+    }
+    .inline-timer-chip-clock {
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      color: var(--primary);
+      font-size: 0.95rem;
+    }
+
     .timer-clock {
       font-size: 1.5rem;
       font-weight: 800;
@@ -1120,7 +1167,7 @@
               <div style="display:flex;gap:6px;flex-wrap:wrap">
                 <button class="btn btn-sm" style="background:rgba(255,255,255,0.2);color:#fff;border-color:rgba(255,255,255,0.4)" onclick="resetIngredientChecks()" title="Deseleziona tutte le spunte ingredienti">☑️ Reset Spunte</button>
                 <button class="btn btn-sm" style="background:rgba(255,255,255,0.2);color:#fff;border-color:rgba(255,255,255,0.4)" onclick="copyRecipeText()">📋 Copia</button>
-                <button class="btn btn-sm" style="background:#fff;color:var(--primary-dark);border:none" onclick="loadRecipeTimers(); navigateTo('timers');">⏱️ Fasi Ricetta</button>
+                <button class="btn btn-sm" style="background:#fff;color:var(--primary-dark);border:none" onclick="focusSheetRecipeTimers()">⏱️ Fasi Ricetta</button>
               </div>
             </div>
           </div>
@@ -1128,8 +1175,32 @@
           <!-- Quality Checks -->
           <div id="warningsBox"></div>
 
-          <!-- Ingredients Breakdown -->
+          <!-- Ingredients Breakdown with Checkboxes -->
           <div id="ingredientsOutput"></div>
+
+          <!-- Step-by-Step Recipe Explanation -->
+          <div class="step-guide-box" id="recipeStepsBox">
+            <div class="phase-title" style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+              <span>📖 Spiegazione Passo Passo</span>
+              <span id="recipeStepsTag" style="font-size:0.75rem;font-weight:600;color:var(--text-muted)">Procedimento guidato</span>
+            </div>
+            <div id="recipeStepsList"></div>
+          </div>
+
+          <!-- Inline Recipe Phase Timers (Manual Start) -->
+          <div class="inline-timers-box" id="sheetRecipeTimersBox">
+            <div class="phase-title" style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap">
+              <span>⏱️ Timer Fasi Ricetta (Avvio Manuale)</span>
+              <div style="display:flex;gap:6px;flex-wrap:wrap">
+                <button class="btn btn-sm" onclick="prepareRecipePlan(true)">↻ Rigenera Fasi</button>
+                <button class="btn btn-sm" onclick="navigateTo('timers')">Scheda Timer Completa →</button>
+              </div>
+            </div>
+            <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:10px">
+              Avvia ogni timer singolarmente solo quando inizi quella fase. Puoi gestire pause, giri di pieghe o chiusura anche dalla barra in alto o dalla sezione Timer.
+            </div>
+            <div id="sheetRecipePhasesList"></div>
+          </div>
 
           <!-- Baking Summary -->
           <div class="phase-box" style="margin-bottom:0">
@@ -1710,6 +1781,7 @@
       flours = JSON.parse(JSON.stringify(p.flours));
       renderFlours();
       recalc();
+      prepareRecipePlan(false);
       navigateTo('calc', 'sheet');
       showToast('Ricetta Caricata', `"${p.name}" pronta nella Scheda Bilancia.`, false);
     }
@@ -2086,6 +2158,7 @@
       `;
 
       runQualityChecks({ hyd, salt, fat, sugar, eggs, yeastType, method, hours, fridgeHours, temp, bTemp: +bTemp });
+      renderRecipeSteps({ name, portions, portionWeight, hyd, salt, fat, sugar, eggs, yeastType, method, hours, fridgeHours, temp, prefPct, bTemp: +bTemp, bMins, bSup, bNotes });
     }
 
     function runQualityChecks(d) {
@@ -2153,6 +2226,245 @@
       'Cottura Forno': 'Controlla la doratura e il suono vuoto bussando sul fondo. Lascia raffreddare su griglia almeno 1 ora.'
     };
 
+
+    function buildRecipeSteps(ctx) {
+      const steps = [];
+      const titleLower = (ctx.name || '').toLowerCase();
+
+      // Step 1: Mise en place & preferment if applicable
+      if (ctx.method === 'biga' || ctx.method === 'poolish') {
+        steps.push({
+          title: `1. Prepara il prefermento (${ctx.method.toUpperCase()})`,
+          text: `Mescola la farina dedicata al prefermento (${ctx.prefPct}% del totale), l’acqua prevista (${ctx.method === 'biga' ? '45%' : '100%'}) e il lievito. Lascia maturare per 16–20 ore a temperatura controllata (16–18°C per Biga, 18–20°C per Poolish) finché appare ben gonfio e con alveoli.`
+        });
+      } else {
+        steps.push({
+          title: '1. Pesa e prepara gli ingredienti',
+          text: `Pesa farine, acqua, sale, eventuale lievito e grassi spuntando ogni riga qui sopra. ${ctx.hyd >= 72 || titleLower.includes('integrale') || titleLower.includes('segale') ? 'Tieni da parte circa il 10–15% dell’acqua per l’inserimento finale a filo.' : 'Tieni l’acqua a temperatura fresca (o fredda se l’impasto tende a scaldarsi).'}`
+        });
+      }
+
+      // Step 2: Autolysis or mixing
+      if (ctx.hyd >= 72 && ctx.yeastType !== 'chemical' && ctx.yeastType !== 'none') {
+        steps.push({
+          title: '2. Autolisi e prima impastatura',
+          text: 'Unisci le farine con la maggior parte dell’acqua (senza sale né lievito) fino ad assorbire i liquidi, poi lascia riposare 30–45 minuti. Riprendi l’impasto, unisci il lievito e impasta fino a formare una massa omogenea.'
+        });
+      } else if (titleLower.includes('frolla')) {
+        steps.push({
+          title: '2. Sabbiaura o montatura degli ingredienti',
+          text: titleLower.includes('montata')
+            ? 'Lavora il burro morbido a pomata con lo zucchero e gli aromi fino a ottenere una crema soffice, poi incorpora uova/liquidi e infine la farina a bassa velocità senza surriscaldare.'
+            : 'Lavora il burro freddo a cubetti con la farina fino a ottenere una consistenza sabbiosa ("sabbiaura"), quindi aggiungi zucchero, uova o liquidi e compatta velocemente senza scaldare l’impasto.'
+        });
+      } else if (titleLower.includes('pan di spagna') || titleLower.includes('margherita')) {
+        steps.push({
+          title: '2. Montatura e incorporamento delicato',
+          text: 'Monta uova e zucchero a lungo fino a ottenere un composto chiaro, spumoso e che "scrive". Incorpora la farina setacciata (e l’eventuale grasso/lievito) con movimenti dal basso verso l’alto con una spatola per non smontare l’aria.'
+        });
+      } else {
+        steps.push({
+          title: '2. Impastamento e incordatura',
+          text: `${ctx.method === 'biga' || ctx.method === 'poolish' ? 'Spezzetta il prefermento maturo e impastalo con la farina residua, l’acqua restante e il lievito. ' : ''}Inserisci il sale a metà lavorazione quando l’impasto inizia a legare, poi prosegui fino a ottenere una massa liscia, elastica e ben incordata.`
+        });
+      }
+
+      // Step 3: Fats / eggs / sugar if present in dough
+      if ((ctx.fat > 0 || ctx.eggs > 0 || ctx.sugar > 0) && !titleLower.includes('frolla') && !titleLower.includes('pan di spagna') && !titleLower.includes('margherita')) {
+        const parts = [];
+        if (ctx.sugar > 0) parts.push('lo zucchero/miele');
+        if (ctx.eggs > 0) parts.push('le uova/tuorli poco alla volta');
+        if (ctx.fat > 0) parts.push('i grassi (olio o burro morbido a piccoli inserti)');
+        steps.push({
+          title: '3. Inserimento degli ingredienti ricchi',
+          text: `A maglia glutinica già formata, aggiungi ${parts.join(' e ')} lasciando assorbire bene ogni aggiunta prima della successiva, così l’impasto mantiene struttura e tenacità.`
+        });
+      }
+
+      // Step 4: Bulk fermentation, folds & cold proofing
+      const foldNote = ctx.hyd >= 68
+        ? ' Esegui 2–3 giri di pieghe (stretch & fold o coil fold) a distanza di 20–30 minuti per rinforzare la maglia e intrappolare gas.'
+        : ' Effettua una breve pirlatura per dare tensione superficiale.';
+      const fridgeNote = ctx.fridgeHours > 0
+        ? ` Trasferisci l’impasto in contenitore ermetico e riponilo in frigorifero a 4°C per circa ${ctx.fridgeHours} ore per favorire maturazione e sapore.`
+        : ' Mantieni l’impasto coperto a temperatura ambiente controllata fino al raddoppio o allo sviluppo previsto.';
+      steps.push({
+        title: `${steps.length + 1}. Puntata, pieghe e maturazione`,
+        text: `Copri l’impasto per evitare che formi crosta.${foldNote}${fridgeNote}`
+      });
+
+      // Step 5: Staglio / formatura & appretto
+      if (titleLower.includes('frolla')) {
+        steps.push({
+          title: `${steps.length + 1}. Riposo in frigo e stesura`,
+          text: 'Appiattisci il panetto a circa 1,5–2 cm, avvolgilo nella pellicola e lascialo riposare in frigo almeno 1–2 ore (o usa subito la frolla montata con bocchetta). Stendi tra due fogli di carta forno allo spessore desiderato.'
+        });
+      } else if (titleLower.includes('pan di spagna') || titleLower.includes('margherita') || titleLower.includes('plumcake') || titleLower.includes('ciambellone') || titleLower.includes('torta di mele')) {
+        steps.push({
+          title: `${steps.length + 1}. Preparazione stampo`,
+          text: 'Versa l’impasto nello stampo imburrato e infarinato (oppure foderato con carta forno), livella la superficie senza sbattere troppo l’impasto e inforna subito a forno già caldo.'
+        });
+      } else {
+        steps.push({
+          title: `${steps.length + 1}. Staglio / formatura e appretto`,
+          text: `Se hai usato il frigo, lascia acclimatare l’impasto se necessario; dividi nelle porzioni previste (${ctx.portions} × ${Math.round(ctx.portionWeight)} g), formatura (panetti, filoni, teglia o treccia) e lascia lievitare in appretto fino al giusto grado di spinta.`
+        });
+      }
+
+      // Step 6: Baking
+      steps.push({
+        title: `${steps.length + 1}. Cottura e raffreddamento`,
+        text: `Preriscalda il forno a ${ctx.bakeTemp}°C (${ctx.bakeSupport}) e cuoci per circa ${ctx.bakeMins} minuti. ${ctx.bakeNotes || 'Controlla la doratura e lascia raffreddare su una griglia prima del taglio o della degustazione.'}`
+      });
+
+      return steps;
+    }
+
+    function renderRecipeSteps(ctx) {
+      const listEl = document.getElementById('recipeStepsList');
+      const tagEl = document.getElementById('recipeStepsTag');
+      if (!listEl) return;
+      const steps = buildRecipeSteps(ctx);
+      if (tagEl) tagEl.textContent = `${steps.length} passaggi • ${ctx.name}`;
+      listEl.innerHTML = steps.map((s, i) => `
+        <div class="step-guide-item">
+          <span class="step-guide-num">${i + 1}</span>
+          <div>
+            <strong>${s.title}</strong>
+            <div style="color:var(--text-muted);margin-top:2px">${s.text}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderSheetRecipePhases() {
+      const container = document.getElementById('sheetRecipePhasesList');
+      if (!container) return;
+
+      if (!recipePlan || !recipePlan.phases || recipePlan.phases.length === 0) {
+        container.innerHTML = `
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;font-size:0.85rem;color:var(--text-muted)">
+            <span>Piano fasi non ancora generato per questa ricetta.</span>
+            <button class="btn btn-sm btn-primary" onclick="prepareRecipePlan(false)">▶ Genera Fasi Ricetta</button>
+          </div>
+        `;
+        return;
+      }
+
+      const now = Date.now();
+      container.innerHTML = recipePlan.phases.map((p, idx) => {
+        const activeTimer = p.timerId ? timers.find(t => t.id === p.timerId) : null;
+        let statusHtml = '';
+        let btnsHtml = '';
+
+        if (activeTimer) {
+          const rem = activeTimer.pausedRemSec !== null
+            ? activeTimer.pausedRemSec
+            : Math.max(0, Math.ceil((activeTimer.endTime - now) / 1000));
+          const isDone = rem === 0 && activeTimer.pausedRemSec === null;
+          statusHtml = isDone
+            ? `<span style="font-size:0.75rem;font-weight:700;color:var(--danger)">⏰ Scaduto</span>`
+            : `<span class="inline-timer-chip-clock">${fmtClock(rem)}</span> <span style="font-size:0.74rem;color:var(--primary);font-weight:600">${activeTimer.pausedRemSec !== null ? '(Pausa)' : '(In corso)'}</span>`;
+          btnsHtml = `
+            <button class="btn btn-sm" onclick="togglePauseTimer('${activeTimer.id}')">${activeTimer.pausedRemSec !== null ? '▶' : '⏸'}</button>
+            <button class="btn btn-sm" onclick="startRecipePhase('${p.id}')" title="Avvia un nuovo timer per questa fase">↻</button>
+            <button class="btn btn-sm" onclick="toggleRecipePhaseDone('${p.id}')" title="Segna completata">✓</button>
+          `;
+        } else if (p.status === 'done') {
+          statusHtml = `<span style="font-size:0.75rem;font-weight:700;color:var(--success, #15803d)">✓ Completata</span>`;
+          btnsHtml = `
+            <button class="btn btn-sm" onclick="startRecipePhase('${p.id}')">▶ Avvia</button>
+            <button class="btn btn-sm" onclick="toggleRecipePhaseDone('${p.id}')" title="Ripristina">↩</button>
+          `;
+        } else {
+          statusHtml = `<span style="font-size:0.75rem;color:var(--text-muted)">Pronta</span>`;
+          btnsHtml = `
+            <button class="btn btn-sm btn-primary" onclick="startRecipePhase('${p.id}')">▶ Avvia (${fmtDurationLabel(p.mins)})</button>
+            <button class="btn btn-sm" onclick="toggleRecipePhaseDone('${p.id}')" title="Segna già fatta">✓</button>
+          `;
+        }
+
+        return `
+          <div class="phase-plan-row ${activeTimer ? 'started' : ''} ${p.status === 'done' ? 'completed' : ''}" style="margin-bottom:6px;padding:9px 12px">
+            <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:190px">
+              <span class="phase-step-badge">${p.status === 'done' ? '✓' : idx + 1}</span>
+              <div>
+                <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+                  <strong style="font-size:0.88rem">${p.name}</strong>
+                  <span style="font-size:0.74rem;padding:1px 6px;border-radius:999px;background:var(--surface);border:1px solid var(--border)">${fmtDurationLabel(p.mins)}</span>
+                  ${statusHtml}
+                </div>
+                <div style="font-size:0.76rem;color:var(--text-muted)">${p.note || ''}</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:5px">
+              ${btnsHtml}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function prepareRecipePlan(showMsg = true) {
+      const recipeTitle = (document.getElementById('recipeName')?.value || document.getElementById('outTitle')?.textContent || 'Ricetta Corrente').trim();
+      const hyd = +document.getElementById('hydration').value;
+      const method = document.getElementById('methodType')?.value || 'direct';
+      const totalHours = +document.getElementById('totalHours')?.value || 4;
+      const fridgeHours = Math.min(totalHours, +document.getElementById('fridgeHours')?.value || 0);
+      const bakeMins = +document.getElementById('bakeMins').value || 20;
+
+      const steps = [];
+      if (method === 'biga' || method === 'poolish') {
+        steps.push({ name: `Prefermento (${method.toUpperCase()})`, mins: 960, isFolds: false, note: 'Maturazione pre-impasto (16h)' });
+      }
+      if (hyd >= 72) {
+        steps.push({ name: 'Autolisi', mins: 45, isFolds: false, note: 'Riposo farina e acqua prima di lievito e sale' });
+      }
+      steps.push({ name: 'Impastamento', mins: 12, isFolds: false, note: 'Chiusura impasto e formazione maglia glutinica' });
+      if (hyd >= 68) {
+        steps.push({ name: 'Pieghe di Rinforzo', mins: 30, isFolds: true, note: 'Serie di pieghe ogni 30 min (usa + Giro)' });
+      }
+      const bulkMins = Math.max(30, Math.min(240, Math.round(Math.max(1, totalHours - fridgeHours) * 60 * 0.55)));
+      steps.push({ name: 'Puntata', mins: bulkMins, isFolds: false, note: 'Prima lievitazione in massa' });
+      if (fridgeHours > 0) {
+        steps.push({ name: 'Maturazione in Frigo', mins: Math.round(fridgeHours * 60), isFolds: false, note: `Riposo controllato a 4°C (${fridgeHours}h)` });
+      }
+      const finalProofMins = fridgeHours > 0 ? 120 : Math.max(30, Math.min(180, Math.round(Math.max(1, totalHours - fridgeHours) * 60 * 0.45)));
+      steps.push({ name: 'Appretto', mins: finalProofMins, isFolds: false, note: 'Lievitazione finale dei panetti / forma' });
+      steps.push({ name: 'Cottura Forno', mins: bakeMins, isFolds: false, note: `Forno a ${document.getElementById('bakeTemp')?.value || 220}°C` });
+
+      recipePlan = {
+        recipeTitle,
+        phases: steps.map((s, idx) => ({
+          id: 'rp_' + Date.now() + '_' + idx,
+          name: s.name,
+          mins: s.mins,
+          isFolds: s.isFolds,
+          note: s.note,
+          status: 'ready',
+          timerId: null
+        }))
+      };
+      saveRecipePlan();
+      renderRecipePhases();
+      renderSheetRecipePhases();
+      if (showMsg) {
+        showToast('Fasi Ricetta Pronte', `Preparate ${recipePlan.phases.length} fasi per "${recipeTitle}". Avvia ciascun timer quando serve.`, false);
+      }
+    }
+
+    function focusSheetRecipeTimers() {
+      if (!recipePlan || !recipePlan.phases || recipePlan.phases.length === 0) {
+        prepareRecipePlan(false);
+      } else {
+        renderSheetRecipePhases();
+      }
+      const box = document.getElementById('sheetRecipeTimersBox');
+      if (box) {
+        box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+
     function addTimer(name, minutes, isFolds = false) {
       const now = Date.now();
       timers.push({
@@ -2175,6 +2487,14 @@
       const mins = Math.max(1, +document.getElementById('customTimerMins').value || 15);
       addTimer(name, mins, false);
       document.getElementById('customTimerName').value = '';
+    }
+
+    function saveRecipePlan() {
+      localStorage.setItem('ab_recipe_plan', JSON.stringify(recipePlan));
+    }
+
+    function loadRecipeTimers() {
+      prepareRecipePlan(true);
     }
 
     function saveRecipePlan() {
@@ -2258,12 +2578,14 @@
       phase.status = phase.status === 'done' ? 'ready' : 'done';
       saveRecipePlan();
       renderRecipePhases();
+      renderSheetRecipePhases();
     }
 
     function clearRecipePhases() {
       recipePlan = null;
       localStorage.removeItem('ab_recipe_plan');
       renderRecipePhases();
+      renderSheetRecipePhases();
     }
 
     function fmtDurationLabel(mins) {
@@ -2279,6 +2601,7 @@
       const titleEl = document.getElementById('recipePhasesTitle');
       const listEl = document.getElementById('recipePhasesList');
       const clearBtn = document.getElementById('clearRecipePhasesBtn');
+      renderSheetRecipePhases();
       if (!titleEl || !listEl) return;
 
       if (!recipePlan || !recipePlan.phases || recipePlan.phases.length === 0) {
@@ -2375,6 +2698,7 @@
       saveTimers();
       renderTimers();
       renderRecipePhases();
+      renderSheetRecipePhases();
     }
 
     function saveTimers() {
@@ -2447,6 +2771,7 @@
       });
       if (changed) saveTimers();
       renderTimers();
+      if (recipePlan && recipePlan.phases && recipePlan.phases.some(p => p.timerId)) renderSheetRecipePhases();
     }, 1000);
 
     function playChime() {
@@ -2476,6 +2801,7 @@
           linked.status = 'done';
           saveRecipePlan();
           renderRecipePhases();
+          renderSheetRecipePhases();
         }
       }
       playChime();
@@ -2869,7 +3195,7 @@
     let tutIndex = 0;
 
     function openTutorialModal(force = false) {
-      if (!force && localStorage.getItem('ab_tutorial_seen_v19') === '1') return;
+      if (!force && localStorage.getItem('ab_tutorial_seen_v20') === '1') return;
       tutIndex = 0;
       renderTutorialStep();
       document.getElementById('tutorialModal').classList.add('open');
@@ -2878,7 +3204,7 @@
     function closeTutorialModal() {
       const m = document.getElementById('tutorialModal');
       if (m) m.classList.remove('open');
-      localStorage.setItem('ab_tutorial_seen_v19', '1');
+      localStorage.setItem('ab_tutorial_seen_v20', '1');
     }
 
     function stepTutorial(delta) {
@@ -2923,7 +3249,9 @@
     renderPresets();
     renderFlours();
     recalc();
+    renderRecipeSteps({ name: document.getElementById('recipeName')?.value || 'Impasto', portions: +document.getElementById('portions')?.value || 1, portionWeight: +document.getElementById('portionWeight')?.value || 250, hyd: +document.getElementById('hydration')?.value || 65, salt: +document.getElementById('salt')?.value || 2, fat: +document.getElementById('fat')?.value || 0, sugar: +document.getElementById('sugar')?.value || 0, eggs: +document.getElementById('eggs')?.value || 0, yeastType: document.getElementById('yeastType')?.value || 'fresh', method: document.getElementById('methodType')?.value || 'direct', hours: +document.getElementById('totalHours')?.value || 4, fridgeHours: +document.getElementById('fridgeHours')?.value || 0, temp: +document.getElementById('ambientTemp')?.value || 22, prefPct: +document.getElementById('prefermentPct')?.value || 40, bTemp: +document.getElementById('bakeTemp')?.value || 220, bMins: +document.getElementById('bakeMins')?.value || 20, bSup: document.getElementById('bakeSupport')?.value || '', bNotes: document.getElementById('bakeNotes')?.value || '' });
     renderRecipePhases();
+    renderSheetRecipePhases();
     renderTimers();
     renderGuide();
     updateNotifDot();
