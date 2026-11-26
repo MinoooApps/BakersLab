@@ -1,11 +1,11 @@
-const CACHE_NAME = 'arte-bianca-pwa-v12';
+const CACHE_NAME = 'arte-bianca-pwa-v13';
 const ASSETS = [
   './',
   './index.html',
-  './manifest.json',
-  './icon.svg',
-  './icon-192.png',
-  './icon-512.png'
+  './manifest.json?v=13',
+  './icon.svg?v=13',
+  './icon-192.png?v=13',
+  './icon-512.png?v=13'
 ];
 
 self.addEventListener('install', (event) => {
@@ -26,7 +26,15 @@ self.addEventListener('activate', (event) => {
 
 self.addEventListener('fetch', (event) => {
   event.respondWith(
-    caches.match(event.request).then((cached) => cached || fetch(event.request))
+    fetch(event.request)
+      .then((res) => {
+        if (res && res.status === 200 && event.request.method === 'GET') {
+          const copy = res.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
+        }
+        return res;
+      })
+      .catch(() => caches.match(event.request, { ignoreSearch: true }))
   );
 });
 
