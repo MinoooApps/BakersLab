@@ -1285,7 +1285,10 @@
     }
 
     /* ======================== NAVIGATION & SUB-TABS ======================== */
-    function navigateTo(viewName, subTab = null) {
+    let navHistory = [{ view: 'home', subTab: null }];
+    let isPopstateNav = false;
+
+    function applyViewState(viewName, subTab = null) {
       document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
       const target = document.getElementById('view-' + viewName);
       if (target) target.classList.add('active');
@@ -1300,6 +1303,50 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
+    function navigateTo(viewName, subTab = null) {
+      const current = navHistory[navHistory.length - 1];
+      const activeSub = subTab || getActiveCalcSubTab();
+      if (!isPopstateNav) {
+        if (!current || current.view !== viewName || (viewName === 'calc' && current.subTab !== activeSub)) {
+          navHistory.push({ view: viewName, subTab: viewName === 'calc' ? activeSub : null });
+          try {
+            history.pushState({ abIndex: navHistory.length - 1, view: viewName, subTab: viewName === 'calc' ? activeSub : null }, '', '');
+          } catch (e) {}
+        }
+      }
+      applyViewState(viewName, subTab);
+    }
+
+    function getActiveCalcSubTab() {
+      if (!document.getElementById('calcPanelMethod')?.classList.contains('hidden')) return 'method';
+      if (!document.getElementById('calcPanelSheet')?.classList.contains('hidden')) return 'sheet';
+      return 'params';
+    }
+
+    window.addEventListener('popstate', (event) => {
+      const modal = document.getElementById('notifModal');
+      if (modal && modal.classList.contains('open')) {
+        closeNotifModal();
+        try { history.pushState({ abModalGuard: true }, '', ''); } catch (e) {}
+        return;
+      }
+      if (navHistory.length > 1) {
+        navHistory.pop();
+        const prev = navHistory[navHistory.length - 1];
+        isPopstateNav = true;
+        applyViewState(prev.view, prev.subTab);
+        isPopstateNav = false;
+      } else {
+        applyViewState('home', null);
+        try { history.pushState({ abRootGuard: true }, '', ''); } catch (e) {}
+      }
+    });
+
+    try {
+      history.replaceState({ abIndex: 0, view: 'home', subTab: null }, '', '');
+      history.pushState({ abRootGuard: true }, '', '');
+    } catch (e) {}
+
     function switchCalcSubTab(sub) {
       document.getElementById('calcPanelParams').classList.toggle('hidden', sub !== 'params');
       document.getElementById('calcPanelMethod').classList.toggle('hidden', sub !== 'method');
@@ -1308,6 +1355,14 @@
       document.getElementById('subTabParams').classList.toggle('active', sub === 'params');
       document.getElementById('subTabMethod').classList.toggle('active', sub === 'method');
       document.getElementById('subTabSheet').classList.toggle('active', sub === 'sheet');
+
+      const current = navHistory[navHistory.length - 1];
+      if (!isPopstateNav && current && current.view === 'calc' && current.subTab !== sub) {
+        navHistory.push({ view: 'calc', subTab: sub });
+        try {
+          history.pushState({ abIndex: navHistory.length - 1, view: 'calc', subTab: sub }, '', '');
+        } catch (e) {}
+      }
     }
 
     function toggleKitchenMode() {

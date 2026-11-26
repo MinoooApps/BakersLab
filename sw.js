@@ -1,4 +1,4 @@
-const CACHE_NAME = 'arte-bianca-pwa-v5';
+const CACHE_NAME = 'arte-bianca-pwa-v7';
 const ASSETS = [
   './',
   './index.html',
