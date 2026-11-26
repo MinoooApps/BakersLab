@@ -1270,7 +1270,7 @@
       </div>
 
       <div class="card" style="padding:14px">
-        <input type="text" id="guideSearch" placeholder="🔍 Cerca nel manuale (es. autolisi, biga, segale, scarpatura, W, poolish)..." oninput="filterGuide()" />
+        <input type="text" id="guideSearch" placeholder="🔍 Cerca nel manuale e nel glossario (es. autolisi, biga, W, P/L, Maillard, retrogradazione, vapore)..." oninput="filterGuide()" />
         <div class="filter-pills" id="guideCategoryPills" style="margin-top:10px;margin-bottom:0">
           <button class="pill active" onclick="filterGuideCat('all', this)">Tutto</button>
           <button class="pill" onclick="filterGuideCat('scienza', this)">Fondamenti</button>
@@ -1278,8 +1278,9 @@
           <button class="pill" onclick="filterGuideCat('dolci', this)">02. Dolci &amp; Secchi</button>
           <button class="pill" onclick="filterGuideCat('lieviti', this)">03. Lieviti &amp; Calcoli</button>
           <button class="pill" onclick="filterGuideCat('banco', this)">04. Timeline</button>
-          <button class="pill" onclick="filterGuideCat('trouble', this)">05. Problemi</button>
-          <button class="pill" onclick="filterGuideCat('glossario', this)">06. Glossario</button>
+          <button class="pill" onclick="filterGuideCat('cottura', this)">05. Cottura &amp; Forni</button>
+          <button class="pill" onclick="filterGuideCat('trouble', this)">06. Problemi</button>
+          <button class="pill" onclick="filterGuideCat('glossario', this)">07. Glossario</button>
         </div>
       </div>
 
@@ -3074,19 +3075,71 @@
         `
       },
       {
+        cat: 'cottura',
+        title: 'Sezione 05 — Cottura, Vapore, Sfogliatura & Gestione Impastatrici',
+        html: `
+          <div class="diagram-grid">
+            <div class="diagram-step">
+              <h4>🔥 Gestione del Vapore in Forno</h4>
+              <p style="font-size:0.84rem">Il vapore nei primi 12–20 minuti mantiene elastica la superficie dell’impasto ritardando la formazione della crosta, favorendo lo sviluppo del volume (<em>oven spring</em>) e donando lucentezza e croccantezza. Rimuovilo o apri uno spiffero nella seconda parte della cottura per asciugare la crosta.</p>
+            </div>
+            <div class="diagram-step">
+              <h4>🥐 Laminazione &amp; Sfogliatura (Burro d’Incasso)</h4>
+              <p style="font-size:0.84rem">Pastello e burro devono avere plasticità simile (burro a 12–14°C, pastello ben raffreddato). Le <strong>pieghe a 3</strong> (a portafoglio) creano strati più spessi e regolari; le <strong>pieghe a 4</strong> (a libro) moltiplicano rapidamente gli strati. Lascia riposare in frigo 30–60 min tra una piega e l’altra per rilassare il glutine.</p>
+            </div>
+            <div class="diagram-step">
+              <h4>⚙️ Impastatrici: A Mano, Planetaria, Spirale e Tuffante</h4>
+              <p style="font-size:0.84rem"><strong>Spirale e tuffante:</strong> scaldano meno l’impasto e chiudono velocemente grandi masse. <strong>Planetaria:</strong> ottima per impasti medi e dolci arricchiti con foglia/gancio, ma controlla la temperatura su alte idratazioni. <strong>A mano:</strong> ideale per piccole pezzature con autolisi e pieghe.</p>
+            </div>
+          </div>
+          <div class="guide-table-wrap" style="margin-top:12px">
+            <table class="guide-table">
+              <thead><tr><th>Supporto / Metodo di Cottura</th><th>Pre-riscaldamento</th><th>Vantaggi &amp; Accorgimenti</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Pentola in Ghisa (Dutch Oven)</strong></td><td>30–40 min alla max T° (230–250°C)</td><td>Trattiene naturalmente il vapore sprigionato dall’impasto nei primi 20 min; scopri con il coperchio per la doratura finale.</td></tr>
+                <tr><td><strong>Pietra Refrattaria / Biscotto</strong></td><td>35–45 min alla max T°</td><td>Trasmette calore per conduzione dal basso: fondamentale per pizza, pinsa, ciabatta e pagnotte a crosta croccante.</td></tr>
+                <tr><td><strong>Teglia in Ferro Blu / Alluminio</strong></td><td>15–20 min a T° target</td><td>Il ferro blu conduce e distribuisce bene il calore per pizza in teglia e focacce; ungere con cura prima della stesura.</td></tr>
+                <tr><td><strong>Stampi per Dolci &amp; Plumcake</strong></td><td>15–20 min a 170–185°C</td><td>Imburra e infarina (o usa carta forno) per agevolare il distacco; evita di aprire il forno nei primi 20 minuti di lievitazione termica.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        `
+      },
+      {
         cat: 'glossario',
-        title: 'Sezione 06 — Legenda e Glossario Completo del Panificatore',
+        title: 'Sezione 07 — Glossario Completo del Panificatore e della Pasticceria Lievitata',
         html: `
           <div class="guide-table-wrap">
             <table class="guide-table">
               <thead><tr><th>Termine / Sigla</th><th>Significato Pratico e Spiegazione Tecnica</th></tr></thead>
               <tbody>
-                <tr><td><strong>Forza della Farina (W)</strong></td><td>Indice alveografico di Chopin: Debole &lt;170; Media 180–250; Forte 260–320; Manitoba 350–420+. Più alto è W, più acqua e ore regge.</td></tr>
-                <tr><td><strong>Tenacità (P) ed Estensibilità (L)</strong></td><td>P = resistenza allo stiramento; L = capacità di allungarsi senza strapparsi. Rapporto ideale P/L = 0,5–0,6 per pane e pizza.</td></tr>
-                <tr><td><strong>Malto Diastasico</strong></td><td>Farina d'orzo germinato ricca di amilasi: scinde amidi in zuccheri semplici, nutrendo i lieviti e favorendo la doratura (Maillard).</td></tr>
-                <tr><td><strong>Incordatura</strong></td><td>Punto in cui la maglia glutinica è formata: impasto liscio, elastico, asciutto al tatto che si stacca dalle pareti della ciotola.</td></tr>
-                <tr><td><strong>Puntata / Staglio / Pirlatura / Appretto</strong></td><td>Puntata = 1ª lievitazione in massa; Staglio = taglio in panetti; Pirlatura = arrotondamento per creare pelle tesa; Appretto = 2ª lievitazione finale.</td></tr>
-                <tr><td><strong>Oven Spring</strong></td><td>Rapida espansione del volume nei primi 10-15 minuti di forno dovuta al calore che dilata i gas interni prima che si formi la crosta.</td></tr>
+                <tr><td><strong>Forza della Farina (W)</strong></td><td>Indice alveografico di Chopin: misura il lavoro meccanico necessario per gonfiare una bolla d’aria fino a rottura. Farina debole &lt;170; media 180–250; forte 260–320; Manitoba 350–420+. Più alto è il W, maggiore è la capacità di assorbire acqua e reggere lunghe maturazioni.</td></tr>
+                <tr><td><strong>Tenacità (P) ed Estensibilità (L)</strong></td><td><strong>P</strong> indica la resistenza dell’impasto allo stiramento; <strong>L</strong> indica quanto riesce ad allungarsi prima di rompersi. Un rapporto equilibrato P/L intorno a 0,5–0,6 facilita la stesura e favorisce uno sviluppo armonico.</td></tr>
+                <tr><td><strong>Indice di Caduta (Falling Number)</strong></td><td>Misura l’attività enzimatica delle alfa-amilasi nella farina (espresso in secondi). Valori troppo bassi indicano eccesso di amilasi (mollica appiccicosa o collasso in cottura); valori molto alti indicano scarsa attività enzimatica (necessità di malto o zuccheri).</td></tr>
+                <tr><td><strong>Idratazione (%)</strong></td><td>Percentuale del peso dei liquidi (acqua, latte, liquidi) calcolata sul peso totale delle farine (es. 700 g di acqua su 1.000 g di farina = 70% di idratazione).</td></tr>
+                <tr><td><strong>Baker’s Percentages</strong></td><td>Sistema di calcolo professionale in cui il totale delle farine equivale sempre al <strong>100%</strong> e ogni ingrediente è espresso in percentuale rispetto a quel peso.</td></tr>
+                <tr><td><strong>Autolisi</strong></td><td>Riposo di farina e acqua (senza sale né lievito) per 20–120 minuti prima dell’impastamento finale: idrata i granuli di amido e avvia la formazione del glutine riducendo tempi meccanici e ossidazione.</td></tr>
+                <tr><td><strong>Fermentolisi</strong></td><td>Simile all’autolisi, ma include già il lievito (e talvolta parte dei liquidi) prima dell’inserimento del sale e dei grassi, avviando precocemente l’attività fermentativa.</td></tr>
+                <tr><td><strong>Incordatura</strong></td><td>Momento in cui la rete glutinica raggiunge forza ed elasticità: l’impasto appare liscio, lucido, elastico, non appiccicoso e si stacca dalle pareti della ciotola.</td></tr>
+                <tr><td><strong>Prova del Velo (Windowpane Test)</strong></td><td>Consiste nell’allargare delicatamente una piccola porzione di impasto tra le dita: se si ottiene una membrana sottile e semitrasparente senza strapparsi subito, la maglia glutinica è ben formata.</td></tr>
+                <tr><td><strong>Puntata</strong></td><td>Prima lievitazione in massa dell’impasto intero, subito dopo la chiusura e le eventuali pieghe, prima della suddivisione in porzioni.</td></tr>
+                <tr><td><strong>Pieghe (Coil Fold, Stretch &amp; Fold, a Libro / a 3)</strong></td><td>Movimenti di ripiegamento dell’impasto che riallineano le catene glutiniche, aumentano la tensione superficiale e incorporano aria senza aggiungere farina extra.</td></tr>
+                <tr><td><strong>Staglio</strong></td><td>Suddivisione dell’impasto in porzioni o panetti del peso desiderato al termine della puntata o della maturazione in massa.</td></tr>
+                <tr><td><strong>Pirlatura</strong></td><td>Arrotondamento rotatorio del panetto sul piano di lavoro per creare una superficie esterna liscia e tesa che trattiene i gas di lievitazione.</td></tr>
+                <tr><td><strong>Appretto</strong></td><td>Seconda e ultima lievitazione delle porzioni già formate (panetti, filoni, pizze in teglia, brioche) prima dell’infornata.</td></tr>
+                <tr><td><strong>Prova del Dito (Poke Test)</strong></td><td>Premendo delicatamente con un dito un panetto lievitato: se l’impronta risale lentamente lasciando un lieve solco, l’impasto è al punto giusto; se risale subito è sotto-lievitato; se non risale o collassa è sovra-lievitato.</td></tr>
+                <tr><td><strong>Maturazione (a Freddo / 4°C)</strong></td><td>Insieme dei processi enzimatici (amilasi e proteasi) che degradano amidi complessi in zuccheri semplici e proteine in peptidi/amminoacidi, migliorando digeribilità, colore in cottura e aroma.</td></tr>
+                <tr><td><strong>Lievitazione</strong></td><td>Processo biologico in cui lieviti (come <em>Saccharomyces cerevisiae</em>) e batteri lattici producono anidride carbonica (CO₂) e composti aromatici, facendo aumentare il volume dell’impasto.</td></tr>
+                <tr><td><strong>Biga</strong></td><td>Pre-impasto asciutto e grezzo (solitamente 44–48% di acqua sulla farina del prefermento) fatto maturare 16–24 ore a temperatura controllata (16–18°C) per conferire struttura, tenacia e profumi complessi.</td></tr>
+                <tr><td><strong>Poolish</strong></td><td>Pre-impasto liquido (100% di acqua sul peso della farina del prefermento) maturato 12–16 ore, che rende l’impasto finale molto estensibile con mollica soffice e crosta sottile.</td></tr>
+                <tr><td><strong>Pasta Madre (LM / Licoli)</strong></td><td>Coltura viva simbiotica di lieviti e batteri lattici rinfrescata periodicamente. Può essere solida (idratazione ~45–50%) o liquida / Li.Co.Li. (idratazione 100%).</td></tr>
+                <tr><td><strong>Malto Diastasico</strong></td><td>Farina o estratto di cereali germinati ricco di enzimi amilasi: scinde gli amidi in zuccheri fermentabili e favorisce una doratura uniforme in forno.</td></tr>
+                <tr><td><strong>Reazione di Maillard &amp; Caramellizzazione</strong></td><td>Reazioni chimiche ad alta temperatura (sopra i 140–160°C) tra zuccheri e amminoacidi (Maillard) o tra zuccheri puri (caramellizzazione) che sviluppano il colore ambrato e il profilo aromatico della crosta.</td></tr>
+                <tr><td><strong>Oven Spring (Spinta in Forno)</strong></td><td>Rapida espansione dell’impasto nei primi minuti di cottura dovuta alla dilatazione termica dei gas, all’evaporazione dell’acqua/alcol e all’ultima spinta dei lieviti prima che la struttura si fissi.</td></tr>
+                <tr><td><strong>Scarpatura</strong></td><td>Incisione superficiale praticata con lametta inclinata (30°–45°) poco prima di infornare per guidare l’espansione del pane in cottura ed evitare spaccature irregolari.</td></tr>
+                <tr><td><strong>Puntura (Docking)</strong></td><td>Piccoli fori praticati sulla pasta (es. sfoglia, frolla, cracker) per permettere la fuoriuscita del vapore ed evitare bolle o rigonfiamenti irregolari.</td></tr>
+                <tr><td><strong>Gelatinizzazione dell’Amido</strong></td><td>Processo durante la cottura (intorno ai 60–70°C in presenza d’acqua) in cui i granuli d’amido assorbono acqua, si gonfiano e formano la struttura solida della mollica.</td></tr>
+                <tr><td><strong>Retrogradazione dell’Amido (Raffermamento)</strong></td><td>Fenomeno per cui, col raffreddamento e il passare dei giorni, le molecole d’amido tendono a riordinarsi espellendo acqua e rendendo il prodotto più duro ("raffermo").</td></tr>
               </tbody>
             </table>
           </div>
@@ -3195,7 +3248,7 @@
     let tutIndex = 0;
 
     function openTutorialModal(force = false) {
-      if (!force && localStorage.getItem('ab_tutorial_seen_v20') === '1') return;
+      if (!force && localStorage.getItem('ab_tutorial_seen_v21') === '1') return;
       tutIndex = 0;
       renderTutorialStep();
       document.getElementById('tutorialModal').classList.add('open');
@@ -3204,7 +3257,7 @@
     function closeTutorialModal() {
       const m = document.getElementById('tutorialModal');
       if (m) m.classList.remove('open');
-      localStorage.setItem('ab_tutorial_seen_v20', '1');
+      localStorage.setItem('ab_tutorial_seen_v21', '1');
     }
 
     function stepTutorial(delta) {
