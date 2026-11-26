@@ -10,7 +10,8 @@
   <title>Arte Bianca — Calcolatore Impasti & Manuale</title>
   <link rel="manifest" href="./manifest.json" />
   <link rel="icon" type="image/svg+xml" href="./icon.svg" />
-  <link rel="apple-touch-icon" href="./icon.svg" />
+  <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png" />
+  <link rel="apple-touch-icon" href="./icon-192.png" />
   <style>
     :root {
       --bg: #faf8f5;
@@ -1178,7 +1179,6 @@
       document.getElementById('prefermentPctBox').style.display = (method === 'biga' || method === 'poolish') ? 'block' : 'none';
       document.getElementById('manualYeastBox').style.display = yeastMode === 'manual' ? 'block' : 'none';
 
-      // Estimate yeast % on flour
       let yeastPct = 0;
       if (yeastType === 'none') {
         yeastPct = 0;
@@ -1207,11 +1207,9 @@
       const eggsG = totalFlour * (eggs / 100);
       const yeastG = totalFlour * (yeastPct / 100);
 
-      // Update Header
       document.getElementById('outTitle').textContent = name;
       document.getElementById('outSubtitle').textContent = `${portions} ${portions === 1 ? 'porzione' : 'porzioni'} da ${portionWeight} g • Totale: ${Math.round(totalDough).toLocaleString('it-IT')} g`;
 
-      // Render Ingredients
       const outEl = document.getElementById('ingredientsOutput');
       const yeastLabel = {
         fresh: 'Lievito di birra fresco',
@@ -1269,7 +1267,6 @@
         `;
       }
 
-      // Baking summary
       const bTemp = document.getElementById('bakeTemp').value;
       const bMins = document.getElementById('bakeMins').value;
       const bSup = document.getElementById('bakeSupport').value;
@@ -1327,20 +1324,13 @@
     function copyRecipeText() {
       const title = document.getElementById('outTitle').textContent;
       const sub = document.getElementById('outSubtitle').textContent;
-      const lines = Array.from(document.querySelectorAll('#ingredientsOutput .ing-line')).map(el => '• ' + el.innerText.replace(/
-/g, ' '));
+      const lines = Array.from(document.querySelectorAll('#ingredientsOutput .ing-line')).map(el => '• ' + el.innerText.replace(/\r?\n/g, ' '));
       const bake = document.getElementById('outBakeSummary').innerText;
-      const text = `${title}
-${sub}
-
-INGREDIENTI:
-${lines.join('
-')}
-
-COTTURA:
-${bake}`;
+      const text = [title, sub, '', 'INGREDIENTI:', ...lines, '', 'COTTURA:', bake].join('\n');
       navigator.clipboard.writeText(text).then(() => {
         showToast('Ricetta Copiata', 'Testo copiato negli appunti pronto da incollare.', false);
+      }).catch(() => {
+        showToast('Copia non riuscita', 'Seleziona manualmente il testo dalla scheda.', false);
       });
     }
 
@@ -1518,7 +1508,7 @@ ${bake}`;
       if ('Notification' in window && Notification.permission === 'granted') {
         const opts = {
           body: bodyText,
-          icon: './icon.svg',
+          icon: './icon-192.png',
           tag: t.id,
           requireInteraction: !!notifCfg.requireInteraction
         };
