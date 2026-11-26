@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bakerslab-pwa-v25';
+const CACHE_NAME = 'bakerslab-pwa-v26';
 const ASSETS = [
   './',
   './index.html',
