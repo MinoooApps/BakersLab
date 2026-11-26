@@ -7,19 +7,19 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="Arte Bianca" />
-  <title>Arte Bianca — Calcolatore Impasti & Manuale</title>
+  <title>Arte Bianca — Calcolatore Impasti &amp; Manuale</title>
   <link rel="manifest" href="./manifest.json" />
   <link rel="icon" type="image/svg+xml" href="./icon.svg" />
   <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png" />
   <link rel="apple-touch-icon" href="./icon-192.png" />
   <style>
     :root {
-      --bg: #faf8f5;
+      --bg: #f6f3ee;
       --surface: #ffffff;
-      --surface-alt: #f3efe8;
-      --border: #e5dec9;
-      --text: #292218;
-      --text-muted: #6e6353;
+      --surface-alt: #f0ece4;
+      --border: #e2dacb;
+      --text: #241e16;
+      --text-muted: #6b6052;
       --primary: #d97706;
       --primary-dark: #b45309;
       --primary-light: #fef3c7;
@@ -27,52 +27,50 @@
       --accent-light: #ccfbf1;
       --danger: #dc2626;
       --danger-light: #fee2e2;
-      --warn: #d97706;
       --warn-light: #fef3c7;
-      --shadow: 0 4px 16px rgba(41, 34, 24, 0.07);
-      --radius: 14px;
+      --shadow: 0 4px 16px rgba(36, 30, 22, 0.06);
+      --radius: 16px;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       background: var(--bg);
       color: var(--text);
       line-height: 1.5;
-      padding-bottom: 80px;
+      padding-bottom: 92px;
     }
 
     /* Kitchen Mode */
     body.kitchen-mode {
-      --bg: #141210;
-      --surface: #1f1b17;
-      --surface-alt: #2b251f;
-      --border: #3e362e;
-      --text: #fdfbf7;
-      --text-muted: #b8ad9e;
-      --primary-light: #452707;
-      --accent-light: #133834;
-      --danger-light: #451212;
-      --warn-light: #452707;
-      font-size: 18px;
+      --bg: #12100e;
+      --surface: #1d1915;
+      --surface-alt: #28231d;
+      --border: #3c342b;
+      --text: #fcfaf6;
+      --text-muted: #b6ab9c;
+      --primary-light: #422506;
+      --accent-light: #123632;
+      --danger-light: #421212;
+      --warn-light: #422506;
+      font-size: 17px;
     }
-    body.kitchen-mode .weight-val { font-size: 1.7rem; }
+    body.kitchen-mode .weight-val { font-size: 1.55rem; }
 
     /* Top Header */
     header {
       position: sticky;
       top: 0;
-      z-index: 50;
+      z-index: 60;
       background: var(--surface);
       border-bottom: 1px solid var(--border);
-      padding: 12px 16px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+      padding: 10px 16px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.03);
     }
     .header-inner {
-      max-width: 1180px;
+      max-width: 1120px;
       margin: 0 auto;
       display: flex;
-      flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
       gap: 10px;
@@ -81,67 +79,42 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      cursor: pointer;
     }
     .brand-icon {
       width: 38px;
       height: 38px;
-      background: var(--primary);
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
       color: #fff;
-      border-radius: 10px;
+      border-radius: 11px;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 20px;
-      font-weight: 800;
+      box-shadow: 0 3px 8px rgba(217, 119, 6, 0.25);
     }
-    .brand h1 { font-size: 1.15rem; font-weight: 800; letter-spacing: -0.02em; }
-    .brand small { display: block; font-size: 0.75rem; color: var(--text-muted); }
-
-    .nav-tabs {
-      display: flex;
-      gap: 6px;
-      background: var(--surface-alt);
-      padding: 4px;
-      border-radius: 12px;
-    }
-    .nav-tab {
-      border: none;
-      background: transparent;
-      color: var(--text-muted);
-      padding: 8px 14px;
-      border-radius: 9px;
-      font-weight: 700;
-      font-size: 0.88rem;
-      cursor: pointer;
-      transition: all 0.18s;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .nav-tab.active {
-      background: var(--surface);
-      color: var(--primary);
-      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-    }
+    .brand h1 { font-size: 1.1rem; font-weight: 800; letter-spacing: -0.02em; }
+    .brand small { display: block; font-size: 0.72rem; color: var(--text-muted); }
 
     .header-actions {
       display: flex;
       align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
+      gap: 6px;
     }
 
+    /* Buttons */
     .btn {
       border: 1px solid var(--border);
       background: var(--surface);
       color: var(--text);
-      padding: 7px 12px;
-      border-radius: 10px;
+      padding: 8px 13px;
+      border-radius: 11px;
       font-size: 0.83rem;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 6px;
       transition: all 0.15s;
     }
@@ -157,7 +130,7 @@
       border-color: var(--accent);
       color: #fff;
     }
-    .btn-sm { padding: 5px 9px; font-size: 0.78rem; border-radius: 8px; }
+    .btn-sm { padding: 6px 10px; font-size: 0.78rem; border-radius: 9px; }
 
     .badge-dot {
       width: 8px; height: 8px; border-radius: 50%; background: #9ca3af; display: inline-block;
@@ -168,50 +141,111 @@
     #activeTimerBanner {
       background: #1f2937;
       color: #fff;
-      padding: 8px 16px;
+      padding: 7px 16px;
       display: none;
       border-bottom: 1px solid #374151;
     }
     #activeTimerBanner.visible { display: block; }
     .banner-inner {
-      max-width: 1180px;
+      max-width: 1120px;
       margin: 0 auto;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
+      gap: 8px;
       flex-wrap: wrap;
     }
-    .banner-timers { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+    .banner-timers { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
     .mini-timer-chip {
       background: #374151;
       padding: 4px 10px;
       border-radius: 8px;
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       display: flex;
       align-items: center;
       gap: 8px;
       font-variant-numeric: tabular-nums;
     }
-    .mini-timer-chip strong { color: #fbbf24; font-size: 0.92rem; }
+    .mini-timer-chip strong { color: #fbbf24; font-size: 0.9rem; }
 
-    /* Container */
-    .container {
-      max-width: 1180px;
-      margin: 18px auto;
-      padding: 0 16px;
-    }
-
-    .grid-main {
+    /* Bottom Main Navigation Bar */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 70;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
       display: grid;
-      grid-template-columns: 1.25fr 0.95fr;
-      gap: 18px;
-      align-items: start;
+      grid-template-columns: repeat(5, 1fr);
+      padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
+      box-shadow: 0 -4px 16px rgba(0,0,0,0.06);
     }
-    @media (max-width: 900px) {
-      .grid-main { grid-template-columns: 1fr; }
+    .nav-item {
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      padding: 6px 2px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.7rem;
+      font-weight: 700;
+      position: relative;
+      transition: color 0.15s;
+    }
+    .nav-item .nav-ico { font-size: 1.25rem; line-height: 1; }
+    .nav-item.active {
+      color: var(--primary);
+      background: var(--primary-light);
+    }
+    .nav-badge {
+      position: absolute;
+      top: 3px;
+      right: calc(50% - 18px);
+      background: var(--danger);
+      color: #fff;
+      font-size: 0.65rem;
+      font-weight: 800;
+      padding: 1px 5px;
+      border-radius: 999px;
+      display: none;
+    }
+    .nav-badge.show { display: inline-block; }
+
+    /* Container & Views */
+    .container {
+      max-width: 1120px;
+      margin: 16px auto;
+      padding: 0 14px;
+    }
+    .view-section { display: none; animation: fadeIn 0.2s ease-out; }
+    .view-section.active { display: block; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
+    /* Section Header Banner */
+    .section-header {
+      margin-bottom: 16px;
+    }
+    .section-header h2 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+    .section-header p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Cards */
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -230,15 +264,103 @@
       gap: 8px;
     }
 
+    /* Home Menu Grid */
+    .home-hero {
+      background: linear-gradient(135deg, #292218, #4d3b26);
+      color: #fff;
+      border-radius: var(--radius);
+      padding: 22px;
+      margin-bottom: 18px;
+      box-shadow: var(--shadow);
+    }
+    .home-hero h2 { font-size: 1.45rem; font-weight: 800; margin-bottom: 6px; }
+    .home-hero p { font-size: 0.88rem; opacity: 0.9; margin-bottom: 14px; }
+    .active-recipe-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.14);
+      padding: 7px 12px;
+      border-radius: 10px;
+      font-size: 0.82rem;
+    }
+
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+    .menu-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      text-align: left;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: transform 0.15s, border-color 0.15s;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      color: var(--text);
+    }
+    .menu-card:hover {
+      transform: translateY(-2px);
+      border-color: var(--primary);
+    }
+    .menu-card-ico {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+    }
+    body.kitchen-mode .menu-card-ico { color: #fbbf24; }
+    .menu-card h3 { font-size: 1.05rem; font-weight: 800; }
+    .menu-card p { font-size: 0.82rem; color: var(--text-muted); line-height: 1.4; }
+
+    /* Sub-tabs inside Calculator */
+    .sub-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      background: var(--surface-alt);
+      padding: 5px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      border: 1px solid var(--border);
+    }
+    .sub-tab {
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      padding: 9px 8px;
+      border-radius: 9px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .sub-tab.active {
+      background: var(--surface);
+      color: var(--primary);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.07);
+    }
+
     /* Presets */
-    .filter-pills { display: flex; gap: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+    .filter-pills { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
     .pill {
-      padding: 5px 12px;
+      padding: 6px 13px;
       border-radius: 999px;
       border: 1px solid var(--border);
       background: var(--surface-alt);
       color: var(--text-muted);
-      font-size: 0.78rem;
+      font-size: 0.8rem;
       font-weight: 700;
       cursor: pointer;
     }
@@ -246,76 +368,74 @@
 
     .preset-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-      gap: 8px;
-      max-height: 220px;
-      overflow-y: auto;
-      padding-right: 4px;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 10px;
     }
     .preset-btn {
       text-align: left;
-      padding: 9px 11px;
-      border-radius: 10px;
+      padding: 13px 14px;
+      border-radius: 12px;
       border: 1px solid var(--border);
       background: var(--surface-alt);
       color: var(--text);
       cursor: pointer;
       transition: all 0.15s;
     }
-    .preset-btn:hover, .preset-btn.active {
+    .preset-btn:hover {
       border-color: var(--primary);
       background: var(--primary-light);
     }
-    .preset-btn .p-name { font-weight: 700; font-size: 0.83rem; display: block; }
-    .preset-btn .p-meta { font-size: 0.72rem; color: var(--text-muted); }
+    .preset-btn .p-name { font-weight: 800; font-size: 0.92rem; display: block; margin-bottom: 3px; }
+    .preset-btn .p-meta { font-size: 0.77rem; color: var(--text-muted); display: block; }
 
     /* Form Controls */
     .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-    @media (max-width: 540px) {
+    @media (max-width: 600px) {
       .row-2, .row-3 { grid-template-columns: 1fr; }
     }
 
-    .field { margin-bottom: 12px; }
+    .field { margin-bottom: 14px; }
     .field label {
       display: flex;
       justify-content: space-between;
-      font-size: 0.82rem;
+      font-size: 0.84rem;
       font-weight: 700;
-      margin-bottom: 4px;
+      margin-bottom: 5px;
       color: var(--text);
     }
     .field label span.val { color: var(--primary); font-weight: 800; }
 
     input[type="number"], input[type="text"], select, textarea {
       width: 100%;
-      padding: 8px 10px;
+      padding: 10px 12px;
       border: 1px solid var(--border);
-      border-radius: 9px;
+      border-radius: 10px;
       background: var(--surface-alt);
       color: var(--text);
-      font-size: 0.9rem;
+      font-size: 0.92rem;
       font-family: inherit;
     }
     input[type="range"] {
       width: 100%;
       accent-color: var(--primary);
       cursor: pointer;
+      height: 6px;
     }
 
     /* Flour Blend Rows */
     .flour-row {
       display: grid;
-      grid-template-columns: 1.6fr 0.7fr auto;
+      grid-template-columns: 1.7fr 0.7fr auto;
       gap: 8px;
       align-items: center;
       margin-bottom: 8px;
     }
     .flour-status {
-      font-size: 0.8rem;
-      padding: 7px 10px;
-      border-radius: 8px;
-      margin-top: 6px;
+      font-size: 0.82rem;
+      padding: 8px 12px;
+      border-radius: 10px;
+      margin-top: 8px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -327,9 +447,9 @@
 
     /* Warnings */
     .warning-item {
-      padding: 9px 12px;
+      padding: 10px 12px;
       border-radius: 10px;
-      font-size: 0.82rem;
+      font-size: 0.83rem;
       margin-bottom: 8px;
       display: flex;
       gap: 8px;
@@ -340,21 +460,20 @@
     body.kitchen-mode .warning-item.tip { color: #fbbf24; }
 
     /* Scale Output Sheet */
-    .sticky-sheet { position: sticky; top: 76px; }
     .sheet-header {
       background: linear-gradient(135deg, var(--primary), var(--primary-dark));
       color: #fff;
-      padding: 14px 16px;
-      border-radius: 12px;
+      padding: 16px;
+      border-radius: 13px;
       margin-bottom: 14px;
     }
-    .sheet-header h2 { font-size: 1.15rem; font-weight: 800; }
-    .sheet-header p { font-size: 0.82rem; opacity: 0.92; }
+    .sheet-header h2 { font-size: 1.2rem; font-weight: 800; }
+    .sheet-header p { font-size: 0.84rem; opacity: 0.92; margin-top: 2px; }
 
     .phase-box {
       border: 1px solid var(--border);
-      border-radius: 11px;
-      padding: 12px;
+      border-radius: 12px;
+      padding: 14px;
       margin-bottom: 12px;
       background: var(--surface-alt);
     }
@@ -370,22 +489,27 @@
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      padding: 5px 0;
+      padding: 6px 0;
       border-bottom: 1px dashed var(--border);
-      font-size: 0.92rem;
+      font-size: 0.94rem;
     }
     .ing-line:last-child { border-bottom: none; }
-    .ing-pct { font-size: 0.76rem; color: var(--text-muted); margin-left: 6px; }
-    .weight-val { font-weight: 800; font-variant-numeric: tabular-nums; font-size: 1.05rem; }
+    .ing-pct { font-size: 0.78rem; color: var(--text-muted); margin-left: 6px; }
+    .weight-val { font-weight: 800; font-variant-numeric: tabular-nums; font-size: 1.08rem; }
 
     /* Timers Section */
-    .timer-quick-bar { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+    .timer-quick-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+      gap: 8px;
+      margin-bottom: 14px;
+    }
     .timer-card {
       border: 1px solid var(--border);
       background: var(--surface-alt);
-      border-radius: 11px;
-      padding: 11px 13px;
-      margin-bottom: 8px;
+      border-radius: 12px;
+      padding: 13px 14px;
+      margin-bottom: 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -402,23 +526,13 @@
       50% { transform: scale(1.01); }
     }
     .timer-clock {
-      font-size: 1.45rem;
+      font-size: 1.5rem;
       font-weight: 800;
       font-variant-numeric: tabular-nums;
       color: var(--primary);
     }
 
     /* Guide Tab */
-    .guide-hero {
-      background: linear-gradient(135deg, #292218, #4a3b28);
-      color: #fff;
-      border-radius: var(--radius);
-      padding: 22px;
-      margin-bottom: 16px;
-    }
-    .guide-hero h2 { font-size: 1.4rem; margin-bottom: 6px; }
-    .guide-hero p { font-size: 0.9rem; opacity: 0.9; }
-
     .guide-table-wrap { overflow-x: auto; margin-top: 10px; }
     table.guide-table {
       width: 100%;
@@ -443,15 +557,15 @@
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 12px;
-      margin-top: 12px;
+      margin-top: 10px;
     }
     .diagram-step {
       background: var(--surface-alt);
       border: 1px solid var(--border);
       border-radius: 12px;
-      padding: 13px;
+      padding: 14px;
     }
-    .diagram-step h4 { color: var(--primary); font-size: 0.92rem; margin-bottom: 6px; }
+    .diagram-step h4 { color: var(--primary); font-size: 0.94rem; margin-bottom: 6px; }
 
     /* Modals & Toast Popups */
     .modal-backdrop {
@@ -480,14 +594,14 @@
 
     #toastContainer {
       position: fixed;
-      bottom: 18px;
-      right: 18px;
+      bottom: 84px;
+      right: 16px;
       z-index: 120;
       display: flex;
       flex-direction: column;
       gap: 10px;
-      max-width: 370px;
-      width: calc(100% - 36px);
+      max-width: 360px;
+      width: calc(100% - 32px);
     }
     .toast-popup {
       background: var(--surface);
@@ -497,13 +611,13 @@
       border-right: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
       border-radius: 12px;
-      padding: 13px 15px;
+      padding: 12px 14px;
       box-shadow: 0 12px 28px rgba(0,0,0,0.18);
-      animation: slideIn 0.25s ease-out;
+      animation: slideIn 0.22s ease-out;
     }
     .toast-popup.alert { border-left-color: var(--danger); }
     @keyframes slideIn {
-      from { transform: translateY(20px); opacity: 0; }
+      from { transform: translateY(16px); opacity: 0; }
       to { transform: translateY(0); opacity: 1; }
     }
 
@@ -511,7 +625,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px 0;
+      padding: 11px 0;
       border-bottom: 1px solid var(--border);
       gap: 12px;
     }
@@ -526,14 +640,14 @@
   <div id="activeTimerBanner">
     <div class="banner-inner">
       <div class="banner-timers" id="bannerTimersList"></div>
-      <button class="btn btn-sm" style="background:#374151;color:#fff;border-color:#4b5563" onclick="scrollToTimers()">Gestisci Timer</button>
+      <button class="btn btn-sm" style="background:#374151;color:#fff;border-color:#4b5563" onclick="navigateTo('timers')">Apri Timer</button>
     </div>
   </div>
 
   <!-- Header -->
   <header>
     <div class="header-inner">
-      <div class="brand">
+      <div class="brand" onclick="navigateTo('home')">
         <div class="brand-icon">🌾</div>
         <div>
           <h1>Arte Bianca</h1>
@@ -541,48 +655,101 @@
         </div>
       </div>
 
-      <div class="nav-tabs">
-        <button class="nav-tab active" id="tabCalcBtn" onclick="switchTab('calc')">⚖️ Calcolatore</button>
-        <button class="nav-tab" id="tabGuideBtn" onclick="switchTab('guide')">📖 Guida &amp; Manuale</button>
-      </div>
-
       <div class="header-actions">
-        <button class="btn hidden" id="installAppBtn" onclick="triggerInstall()">📲 Installa App</button>
-        <button class="btn" onclick="openNotifModal()">
-          <span class="badge-dot" id="notifStatusDot"></span> 🔔 Notifiche
+        <button class="btn btn-sm hidden" id="installAppBtn" onclick="triggerInstall()">📲 Installa</button>
+        <button class="btn btn-sm" onclick="openNotifModal()">
+          <span class="badge-dot" id="notifStatusDot"></span> 🔔
         </button>
-        <button class="btn" id="kitchenBtn" onclick="toggleKitchenMode()">👨‍🍳 Vista Cucina</button>
+        <button class="btn btn-sm" id="kitchenBtn" onclick="toggleKitchenMode()">👨‍🍳 Cucina</button>
       </div>
     </div>
   </header>
 
-  <!-- TAB 1: CALCOLATORE -->
-  <main class="container" id="viewCalc">
-    <div class="grid-main">
+  <main class="container">
 
-      <!-- LEFT COLUMN: CONTROLS -->
-      <div>
-        <!-- Presets & Saved -->
-        <div class="card">
-          <div class="card-title">
-            <span>1. Scegli Ricetta Base o Salvata</span>
-            <button class="btn btn-sm btn-primary" onclick="saveCurrentRecipe()">💾 Salva Variante</button>
-          </div>
-          <div class="filter-pills">
-            <button class="pill active" onclick="setPresetFilter('all', this)">Tutti (16)</button>
-            <button class="pill" onclick="setPresetFilter('salato', this)">Salati (8)</button>
-            <button class="pill" onclick="setPresetFilter('dolce', this)">Dolci (8)</button>
-            <button class="pill" onclick="setPresetFilter('saved', this)">⭐ Salvati (<span id="savedCount">0</span>)</button>
-          </div>
-          <div class="preset-grid" id="presetGrid"></div>
+    <!-- ================= VIEW 1: HOME / MENÙ PRINCIPALE ================= -->
+    <section class="view-section active" id="view-home">
+      <div class="home-hero">
+        <h2>Laboratorio Arte Bianca</h2>
+        <p>Scegli la sezione di lavoro: carica una ricetta base, regola le percentuali del tuo impasto, controlla i timer o consulta il manuale tecnico.</p>
+        <div class="active-recipe-pill">
+          <span>Impasto attivo:</span>
+          <strong id="homeActiveRecipe">Pizza Tonda Classica (1.040 g)</strong>
         </div>
+      </div>
 
-        <!-- Quantity & Flour Blend -->
+      <div class="menu-grid">
+        <button class="menu-card" onclick="navigateTo('recipes')">
+          <div class="menu-card-ico">📚</div>
+          <h3>1. Ricette Base &amp; Salvate</h3>
+          <p>16 ricette pronte (Pizze, Pani, Focacce, Brioche, Dolci) e le tue varianti salvate.</p>
+        </button>
+
+        <button class="menu-card" onclick="navigateTo('calc', 'params')">
+          <div class="menu-card-ico">⚖️</div>
+          <h3>2. Calcolatore Impasto</h3>
+          <p>Imposta pezzatura, mix farine al 100%, idratazione, metodo (Diretto, Frigo, Biga, Poolish) e forno.</p>
+        </button>
+
+        <button class="menu-card" onclick="navigateTo('calc', 'sheet')">
+          <div class="menu-card-ico">🧾</div>
+          <h3>3. Scheda Bilancia &amp; Dosi</h3>
+          <p>Visualizza i grammi esatti pronti da pesare, gli avvisi tecnici e copia la ricetta.</p>
+        </button>
+
+        <button class="menu-card" onclick="navigateTo('timers')">
+          <div class="menu-card-ico">⏱️</div>
+          <h3>4. Timer &amp; Fasi Lavorazione</h3>
+          <p>Timer multipli simultanei per autolisi, giri di pieghe, puntata, appretto e cottura con avvisi.</p>
+        </button>
+
+        <button class="menu-card" onclick="navigateTo('guide')">
+          <div class="menu-card-ico">📖</div>
+          <h3>5. Manuale del Panificatore</h3>
+          <p>Tabelle complete, calcolatore temperatura acqua, peso per teglia, troubleshooting e glossario.</p>
+        </button>
+      </div>
+    </section>
+
+    <!-- ================= VIEW 2: RICETTE BASE & SALVATE ================= -->
+    <section class="view-section" id="view-recipes">
+      <div class="section-header">
+        <h2>Ricette Base &amp; Salvate</h2>
+        <p>Tocca una ricetta per caricarne automaticamente dosi, metodo, lievitazione e cottura nel calcolatore.</p>
+      </div>
+
+      <div class="card">
+        <div class="filter-pills">
+          <button class="pill active" onclick="setPresetFilter('all', this)">Tutti (16)</button>
+          <button class="pill" onclick="setPresetFilter('salato', this)">Salati (8)</button>
+          <button class="pill" onclick="setPresetFilter('dolce', this)">Dolci (8)</button>
+          <button class="pill" onclick="setPresetFilter('saved', this)">⭐ Salvati (<span id="savedCount">0</span>)</button>
+        </div>
+        <div class="preset-grid" id="presetGrid"></div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW 3: CALCOLATORE & SCHEDA BILANCIA ================= -->
+    <section class="view-section" id="view-calc">
+      <div class="section-header" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+        <div>
+          <h2>Calcolatore Impasto</h2>
+          <p>Diviso in 3 schede ordinate per non perdere mai il filo.</p>
+        </div>
+        <button class="btn btn-sm btn-primary" onclick="saveCurrentRecipe()">💾 Salva Variante</button>
+      </div>
+
+      <!-- Sub-navigation inside Calculator -->
+      <div class="sub-tabs">
+        <button class="sub-tab active" id="subTabParams" onclick="switchCalcSubTab('params')">1. Dosi &amp; Farine</button>
+        <button class="sub-tab" id="subTabMethod" onclick="switchCalcSubTab('method')">2. Lievitazione &amp; Forno</button>
+        <button class="sub-tab" id="subTabSheet" onclick="switchCalcSubTab('sheet')">3. Scheda Bilancia</button>
+      </div>
+
+      <!-- SUB-TAB 1: DOSI & FARINE -->
+      <div id="calcPanelParams">
         <div class="card">
-          <div class="card-title">
-            <span>2. Pezzatura &amp; Mix Farine (100%)</span>
-            <button class="btn btn-sm" onclick="addFlourRow()">+ Aggiungi Farina</button>
-          </div>
+          <div class="card-title"><span>Pezzatura &amp; Quantità</span></div>
           <div class="row-3">
             <div class="field">
               <label>Nome Impasto</label>
@@ -597,14 +764,19 @@
               <input type="number" id="portionWeight" min="20" max="5000" step="5" value="260" oninput="recalc()" />
             </div>
           </div>
+        </div>
 
+        <div class="card">
+          <div class="card-title">
+            <span>Mix Farine (Base 100%)</span>
+            <button class="btn btn-sm" onclick="addFlourRow()">+ Aggiungi Farina</button>
+          </div>
           <div id="flourList"></div>
           <div id="flourStatus" class="flour-status ok"></div>
         </div>
 
-        <!-- Percentages -->
         <div class="card">
-          <div class="card-title"><span>3. Idratazione, Sale, Grassi &amp; Arricchimenti</span></div>
+          <div class="card-title"><span>Idratazione, Sale, Grassi &amp; Arricchimenti</span></div>
           <div class="row-2">
             <div class="field">
               <label>Idratazione (Acqua/Latte) <span class="val" id="lblHydration">65%</span></label>
@@ -642,11 +814,16 @@
               </select>
             </div>
           </div>
+          <div style="display:flex;justify-content:flex-end">
+            <button class="btn btn-primary" onclick="switchCalcSubTab('method')">Avanti: Lievitazione &amp; Forno →</button>
+          </div>
         </div>
+      </div>
 
-        <!-- Fermentation & Preferments -->
+      <!-- SUB-TAB 2: LIEVITAZIONE & FORNO -->
+      <div id="calcPanelMethod" class="hidden">
         <div class="card">
-          <div class="card-title"><span>4. Metodo, Tempi &amp; Temperatura Lievitazione</span></div>
+          <div class="card-title"><span>Metodo, Tempi &amp; Temperatura Lievitazione</span></div>
           <div class="row-3">
             <div class="field">
               <label>Metodo Impasto</label>
@@ -693,9 +870,8 @@
           </div>
         </div>
 
-        <!-- Baking Instructions -->
         <div class="card">
-          <div class="card-title"><span>5. Indicazioni di Cottura</span></div>
+          <div class="card-title"><span>Indicazioni di Cottura</span></div>
           <div class="row-3">
             <div class="field">
               <label>Temperatura Forno (°C)</label>
@@ -710,45 +886,30 @@
               <input type="text" id="bakeSupport" value="Pietra refrattaria / Teglia" oninput="recalc()" />
             </div>
           </div>
-          <div class="field" style="margin-bottom:0">
+          <div class="field">
             <label>Note &amp; Consigli di Cottura</label>
             <textarea id="bakeNotes" rows="2" oninput="recalc()">Preriscalda al massimo con pietra/teglia. Cuoci prima con solo pomodoro, aggiungi mozzarella negli ultimi 3 minuti.</textarea>
           </div>
-        </div>
-
-        <!-- Multi-Timers -->
-        <div class="card" id="timersSection">
-          <div class="card-title">
-            <span>6. Timer Multipli &amp; Fasi Lavorazione</span>
-            <button class="btn btn-sm btn-accent" onclick="loadRecipeTimers()">+ Carica Fasi Ricetta</button>
+          <div style="display:flex;justify-content:space-between;gap:8px">
+            <button class="btn" onclick="switchCalcSubTab('params')">← Indietro</button>
+            <button class="btn btn-primary" onclick="switchCalcSubTab('sheet')">Vedi Scheda Bilancia →</button>
           </div>
-          <div class="timer-quick-bar">
-            <button class="btn btn-sm" onclick="addTimer('Impastamento', 12, false)">+ Impasto (12m)</button>
-            <button class="btn btn-sm" onclick="addTimer('Autolisi', 45, false)">+ Autolisi (45m)</button>
-            <button class="btn btn-sm" onclick="addTimer('Pieghe di Rinforzo', 30, true)">+ Pieghe (30m + giri)</button>
-            <button class="btn btn-sm" onclick="addTimer('Puntata', 120, false)">+ Puntata (2h)</button>
-            <button class="btn btn-sm" onclick="addTimer('Appretto', 90, false)">+ Appretto (1.5h)</button>
-            <button class="btn btn-sm" onclick="addTimer('Cottura Forno', parseInt(document.getElementById('bakeMins').value)||15, false)">+ Cottura Ricetta</button>
-          </div>
-          <div class="row-3" style="margin-bottom:10px">
-            <input type="text" id="customTimerName" placeholder="Nome timer personalizzato..." />
-            <input type="number" id="customTimerMins" min="1" max="1440" value="30" placeholder="Minuti" />
-            <button class="btn btn-primary" onclick="addCustomTimer()">Avvia Timer</button>
-          </div>
-          <div id="timersList"></div>
         </div>
       </div>
 
-      <!-- RIGHT COLUMN: SCALE SHEET & QUALITY WARNINGS -->
-      <div class="sticky-sheet">
+      <!-- SUB-TAB 3: SCHEDA BILANCIA -->
+      <div id="calcPanelSheet" class="hidden">
         <div class="card">
           <div class="sheet-header">
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap">
               <div>
                 <h2 id="outTitle">Pizza Tonda Classica</h2>
                 <p id="outSubtitle">4 panetti da 260 g • Totale impasto: 1.040 g</p>
               </div>
-              <button class="btn btn-sm" style="background:rgba(255,255,255,0.2);color:#fff;border-color:rgba(255,255,255,0.4)" onclick="copyRecipeText()">📋 Copia</button>
+              <div style="display:flex;gap:6px">
+                <button class="btn btn-sm" style="background:rgba(255,255,255,0.2);color:#fff;border-color:rgba(255,255,255,0.4)" onclick="copyRecipeText()">📋 Copia</button>
+                <button class="btn btn-sm" style="background:#fff;color:var(--primary-dark);border:none" onclick="loadRecipeTimers(); navigateTo('timers');">⏱️ Avvia Fasi</button>
+              </div>
             </div>
           </div>
 
@@ -761,37 +922,97 @@
           <!-- Baking Summary -->
           <div class="phase-box" style="margin-bottom:0">
             <div class="phase-title">🔥 Cottura &amp; Gestione</div>
-            <div id="outBakeSummary" style="font-size:0.86rem"></div>
+            <div id="outBakeSummary" style="font-size:0.88rem"></div>
           </div>
         </div>
       </div>
+    </section>
 
-    </div>
+    <!-- ================= VIEW 4: TIMER & FASI LAVORAZIONE ================= -->
+    <section class="view-section" id="view-timers">
+      <div class="section-header" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
+        <div>
+          <h2>Timer &amp; Fasi Lavorazione</h2>
+          <p>Avvia uno o più timer simultanei con avvisi sonori e notifiche.</p>
+        </div>
+        <button class="btn btn-sm btn-accent" onclick="loadRecipeTimers()">+ Carica Tutte le Fasi della Ricetta</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span>Avvio Rapido Fasi Standard</span></div>
+        <div class="timer-quick-grid">
+          <button class="btn" onclick="addTimer('Impastamento', 12, false)">🌀 Impasto (12m)</button>
+          <button class="btn" onclick="addTimer('Autolisi', 45, false)">💧 Autolisi (45m)</button>
+          <button class="btn" onclick="addTimer('Pieghe di Rinforzo', 30, true)">👐 Pieghe (30m)</button>
+          <button class="btn" onclick="addTimer('Puntata', 120, false)">🫧 Puntata (2h)</button>
+          <button class="btn" onclick="addTimer('Appretto', 90, false)">🥖 Appretto (1.5h)</button>
+          <button class="btn" onclick="addTimer('Cottura Forno', parseInt(document.getElementById('bakeMins').value)||15, false)">🔥 Cottura Ricetta</button>
+        </div>
+
+        <div class="card-title" style="margin-top:8px"><span>Timer Personalizzato</span></div>
+        <div class="row-3">
+          <input type="text" id="customTimerName" placeholder="Es. Riposo in frigo, Staglio..." />
+          <input type="number" id="customTimerMins" min="1" max="1440" value="30" placeholder="Minuti" />
+          <button class="btn btn-primary" onclick="addCustomTimer()">▶ Avvia Timer</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title"><span>Timer in Corso</span></div>
+        <div id="timersList"></div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW 5: MANUALE DEL PANIFICATORE ================= -->
+    <section class="view-section" id="view-guide">
+      <div class="section-header">
+        <h2>Manuale Completo del Panificatore</h2>
+        <p>Tabelle tecniche, calcolatori di servizio, timeline orarie, troubleshooting e glossario.</p>
+      </div>
+
+      <div class="card" style="padding:14px">
+        <input type="text" id="guideSearch" placeholder="🔍 Cerca nel manuale (es. autolisi, biga, segale, scarpatura, W, poolish)..." oninput="filterGuide()" />
+        <div class="filter-pills" id="guideCategoryPills" style="margin-top:10px;margin-bottom:0">
+          <button class="pill active" onclick="filterGuideCat('all', this)">Tutto</button>
+          <button class="pill" onclick="filterGuideCat('scienza', this)">Fondamenti</button>
+          <button class="pill" onclick="filterGuideCat('pani', this)">01. Pani &amp; Pizze</button>
+          <button class="pill" onclick="filterGuideCat('dolci', this)">02. Dolci &amp; Secchi</button>
+          <button class="pill" onclick="filterGuideCat('lieviti', this)">03. Lieviti &amp; Calcoli</button>
+          <button class="pill" onclick="filterGuideCat('banco', this)">04. Timeline</button>
+          <button class="pill" onclick="filterGuideCat('trouble', this)">05. Problemi</button>
+          <button class="pill" onclick="filterGuideCat('glossario', this)">06. Glossario</button>
+        </div>
+      </div>
+
+      <div id="guideContentArea"></div>
+    </section>
+
   </main>
 
-  <!-- TAB 2: GUIDA & MANUALE -->
-  <section class="container hidden" id="viewGuide">
-    <div class="guide-hero">
-      <h2>Manuale Completo del Panificatore</h2>
-      <p>Scienza degli impasti, percentuali su base 100% farina, pre-impasti, controllo termico, timeline orarie, troubleshooting e glossario tecnico.</p>
-      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
-        <input type="text" id="guideSearch" placeholder="🔍 Cerca nel manuale (es. autolisi, biga, segale, scarpatura, W, poolish)..." style="max-width:460px;background:#fff;color:#111" oninput="filterGuide()" />
-      </div>
-    </div>
-
-    <div class="filter-pills" id="guideCategoryPills">
-      <button class="pill active" onclick="filterGuideCat('all', this)">Tutto il Manuale</button>
-      <button class="pill" onclick="filterGuideCat('scienza', this)">Fondamenti &amp; Diagrammi</button>
-      <button class="pill" onclick="filterGuideCat('pani', this)">01. Pani &amp; Pizze</button>
-      <button class="pill" onclick="filterGuideCat('dolci', this)">02. Dolci &amp; Secchi</button>
-      <button class="pill" onclick="filterGuideCat('lieviti', this)">03. Lieviti, Biga &amp; Calcoli</button>
-      <button class="pill" onclick="filterGuideCat('banco', this)">04. Prontuario &amp; Timeline</button>
-      <button class="pill" onclick="filterGuideCat('trouble', this)">05. Troubleshooting</button>
-      <button class="pill" onclick="filterGuideCat('glossario', this)">06. Glossario</button>
-    </div>
-
-    <div id="guideContentArea"></div>
-  </section>
+  <!-- BOTTOM MAIN MENU NAVIGATION -->
+  <nav class="bottom-nav" aria-label="Menù principale">
+    <button class="nav-item active" id="nav-home" onclick="navigateTo('home')">
+      <span class="nav-ico">🏠</span>
+      <span>Menù</span>
+    </button>
+    <button class="nav-item" id="nav-recipes" onclick="navigateTo('recipes')">
+      <span class="nav-ico">📚</span>
+      <span>Ricette</span>
+    </button>
+    <button class="nav-item" id="nav-calc" onclick="navigateTo('calc')">
+      <span class="nav-ico">⚖️</span>
+      <span>Calcola</span>
+    </button>
+    <button class="nav-item" id="nav-timers" onclick="navigateTo('timers')">
+      <span class="nav-ico">⏱️</span>
+      <span>Timer</span>
+      <span class="nav-badge" id="navTimerBadge">0</span>
+    </button>
+    <button class="nav-item" id="nav-guide" onclick="navigateTo('guide')">
+      <span class="nav-ico">📖</span>
+      <span>Manuale</span>
+    </button>
+  </nav>
 
   <!-- NOTIFICATION SETTINGS MODAL -->
   <div class="modal-backdrop" id="notifModal">
@@ -828,7 +1049,7 @@
       <div class="switch-row">
         <div>
           <strong>Pop-up Informativi Operativi</strong>
-          <div style="font-size:0.78rem;color:var(--text-muted)">Mostra consigli pratici al termine dei timer e suggerimenti tecnici mentre imposti la ricetta (es. autolisi, incordatura grassi).</div>
+          <div style="font-size:0.78rem;color:var(--text-muted)">Mostra consigli pratici al termine dei timer e suggerimenti tecnici mentre imposti la ricetta.</div>
         </div>
         <input type="checkbox" id="cfgSmartPopups" checked onchange="saveNotifSettings()" />
       </div>
@@ -946,7 +1167,7 @@
 
     function triggerInstall() {
       if (!deferredInstallPrompt) {
-        showToast('Installazione App', 'Usa il menu del browser ("Aggiungi a schermata Home" o "Installa app") per installarla sul dispositivo.', false);
+        showToast('Installazione App', 'Usa il menu del browser ("Aggiungi a schermata Home" o "Installa app") per installarla.', false);
         return;
       }
       deferredInstallPrompt.prompt();
@@ -956,13 +1177,30 @@
       });
     }
 
-    /* ======================== NAVIGATION & UI ======================== */
-    function switchTab(tab) {
-      const isCalc = tab === 'calc';
-      document.getElementById('viewCalc').classList.toggle('hidden', !isCalc);
-      document.getElementById('viewGuide').classList.toggle('hidden', isCalc);
-      document.getElementById('tabCalcBtn').classList.toggle('active', isCalc);
-      document.getElementById('tabGuideBtn').classList.toggle('active', !isCalc);
+    /* ======================== NAVIGATION & SUB-TABS ======================== */
+    function navigateTo(viewName, subTab = null) {
+      document.querySelectorAll('.view-section').forEach(sec => sec.classList.remove('active'));
+      const target = document.getElementById('view-' + viewName);
+      if (target) target.classList.add('active');
+
+      document.querySelectorAll('.bottom-nav .nav-item').forEach(btn => btn.classList.remove('active'));
+      const navBtn = document.getElementById('nav-' + viewName);
+      if (navBtn) navBtn.classList.add('active');
+
+      if (viewName === 'calc' && subTab) {
+        switchCalcSubTab(subTab);
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function switchCalcSubTab(sub) {
+      document.getElementById('calcPanelParams').classList.toggle('hidden', sub !== 'params');
+      document.getElementById('calcPanelMethod').classList.toggle('hidden', sub !== 'method');
+      document.getElementById('calcPanelSheet').classList.toggle('hidden', sub !== 'sheet');
+
+      document.getElementById('subTabParams').classList.toggle('active', sub === 'params');
+      document.getElementById('subTabMethod').classList.toggle('active', sub === 'method');
+      document.getElementById('subTabSheet').classList.toggle('active', sub === 'sheet');
     }
 
     function toggleKitchenMode() {
@@ -971,15 +1209,10 @@
       document.getElementById('kitchenBtn').classList.toggle('btn-primary', active);
     }
 
-    function scrollToTimers() {
-      switchTab('calc');
-      document.getElementById('timersSection').scrollIntoView({ behavior: 'smooth' });
-    }
-
     /* ======================== PRESETS ======================== */
     function setPresetFilter(cat, btn) {
       currentFilter = cat;
-      document.querySelectorAll('#viewCalc .filter-pills .pill').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('#view-recipes .filter-pills .pill').forEach(p => p.classList.remove('active'));
       btn.classList.add('active');
       renderPresets();
     }
@@ -997,14 +1230,14 @@
       }
 
       if (list.length === 0) {
-        grid.innerHTML = '<div style="grid-column:1/-1;font-size:0.83rem;color:var(--text-muted);padding:10px">Nessuna ricetta salvata in questa categoria.</div>';
+        grid.innerHTML = '<div style="grid-column:1/-1;font-size:0.86rem;color:var(--text-muted);padding:12px">Nessuna ricetta salvata in questa categoria.</div>';
         return;
       }
 
       grid.innerHTML = list.map((p, idx) => `
         <button class="preset-btn" onclick="applyPreset('${p.id || idx}', ${currentFilter === 'saved'})">
           <span class="p-name">${p.name}</span>
-          <span class="p-meta">${p.hydration}% idr • ${p.hours > 0 ? p.hours + 'h' : 'senza liev.'}</span>
+          <span class="p-meta">${p.portions} pz × ${p.weight}g • ${p.hydration}% idr • ${p.hours > 0 ? p.hours + 'h' : 'senza liev.'}</span>
         </button>
       `).join('');
     }
@@ -1034,7 +1267,8 @@
       flours = JSON.parse(JSON.stringify(p.flours));
       renderFlours();
       recalc();
-      showToast('Ricetta Caricata', `Impostati parametri per "${p.name}".`, false);
+      navigateTo('calc', 'sheet');
+      showToast('Ricetta Caricata', `"${p.name}" pronta nella Scheda Bilancia.`, false);
     }
 
     function saveCurrentRecipe() {
@@ -1064,7 +1298,7 @@
       savedRecipes.unshift(entry);
       localStorage.setItem('ab_saved_recipes', JSON.stringify(savedRecipes));
       renderPresets();
-      showToast('Variante Salvata', `"${name}" salvata nella scheda Salvati.`, false);
+      showToast('Variante Salvata', `"${name}" salvata nella sezione Ricette > Salvati.`, false);
     }
 
     /* ======================== FLOUR BLEND ======================== */
@@ -1208,7 +1442,9 @@
       const yeastG = totalFlour * (yeastPct / 100);
 
       document.getElementById('outTitle').textContent = name;
-      document.getElementById('outSubtitle').textContent = `${portions} ${portions === 1 ? 'porzione' : 'porzioni'} da ${portionWeight} g • Totale: ${Math.round(totalDough).toLocaleString('it-IT')} g`;
+      const subText = `${portions} ${portions === 1 ? 'porzione' : 'porzioni'} da ${portionWeight} g • Totale: ${Math.round(totalDough).toLocaleString('it-IT')} g`;
+      document.getElementById('outSubtitle').textContent = subText;
+      document.getElementById('homeActiveRecipe').textContent = `${name} (${Math.round(totalDough).toLocaleString('it-IT')} g)`;
 
       const outEl = document.getElementById('ingredientsOutput');
       const yeastLabel = {
@@ -1299,11 +1535,11 @@
       }
       if (d.hyd >= 72 && d.yeastType !== 'chemical' && d.yeastType !== 'none') {
         warnings.push({ type: 'tip', msg: 'Consiglio Autolisi: con idratazione ≥72% fai riposare farina e 85% dell’acqua per 45-60 min prima di aggiungere lievito e sale.' });
-        triggerSmartPopup('autolisi', '💡 Consiglio Operativo: Autolisi', 'Stai lavorando sopra il 72% di idratazione: un’autolisi di 45-60 min (solo farina + acqua) ridurrà i tempi di impasto e migliorerà l’alveolatura.');
+        triggerSmartPopup('autolisi', '💡 Consiglio Operativo: Autolisi', 'Sopra il 72% di idratazione un’autolisi di 45-60 min migliora l’alveolatura.');
       }
       if (d.fat >= 12) {
         warnings.push({ type: 'tip', msg: 'Regola Incordatura: con grassi ≥12% forma prima la maglia glutinica con farina, liquidi, uova e lievito, poi incorpora il burro morbido a piccoli pezzi.' });
-        triggerSmartPopup('grassi', '💡 Regola dei Grassi (>12%)', 'Inserisci burro o olio solo a impasto già incordato ed elastico, altrimenti i grassi impermeabilizzano il glutine.');
+        triggerSmartPopup('grassi', '💡 Regola dei Grassi (>12%)', 'Inserisci burro o olio solo a impasto già incordato ed elastico.');
       }
       if (d.temp >= 27 && d.yeastType !== 'chemical' && d.yeastType !== 'none') {
         warnings.push({ type: 'tip', msg: 'Ambiente caldo (≥27°C): usa acqua fredda da frigo (4-8°C) per chiudere l’impasto sotto i 25°C.' });
@@ -1328,7 +1564,7 @@
       const bake = document.getElementById('outBakeSummary').innerText;
       const text = [title, sub, '', 'INGREDIENTI:', ...lines, '', 'COTTURA:', bake].join('\n');
       navigator.clipboard.writeText(text).then(() => {
-        showToast('Ricetta Copiata', 'Testo copiato negli appunti pronto da incollare.', false);
+        showToast('Ricetta Copiata', 'Testo copiato negli appunti.', false);
       }).catch(() => {
         showToast('Copia non riuscita', 'Seleziona manualmente il testo dalla scheda.', false);
       });
@@ -1427,9 +1663,13 @@
       const list = document.getElementById('timersList');
       const banner = document.getElementById('activeTimerBanner');
       const bannerList = document.getElementById('bannerTimersList');
+      const badge = document.getElementById('navTimerBadge');
+
+      badge.textContent = timers.length;
+      badge.classList.toggle('show', timers.length > 0);
 
       if (timers.length === 0) {
-        list.innerHTML = '<div style="font-size:0.83rem;color:var(--text-muted)">Nessun timer attivo. Usa i pulsanti rapidi qui sopra per avviare una fase.</div>';
+        list.innerHTML = '<div style="font-size:0.85rem;color:var(--text-muted)">Nessun timer attivo. Usa i pulsanti qui sopra per avviare una fase.</div>';
         banner.classList.remove('visible');
         return;
       }
@@ -1539,7 +1779,7 @@
       `;
       container.appendChild(div);
       if (!isAlert) {
-        setTimeout(() => { if (div.parentNode) div.remove(); }, 6500);
+        setTimeout(() => { if (div.parentNode) div.remove(); }, 5500);
       }
     }
 

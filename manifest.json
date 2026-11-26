@@ -4,7 +4,7 @@
   "description": "Calcolatore professionale per impasti fatti in casa, timer multipli, avvisi intelligenti e Manuale Completo del Panificatore.",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#faf8f5",
+  "background_color": "#f6f3ee",
   "theme_color": "#d97706",
   "orientation": "any",
   "icons": [
