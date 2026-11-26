@@ -682,7 +682,7 @@
         <button class="menu-card" onclick="navigateTo('recipes')">
           <div class="menu-card-ico">📚</div>
           <h3>1. Ricette Base &amp; Salvate</h3>
-          <p>16 ricette pronte (Pizze, Pani, Focacce, Brioche, Dolci) e le tue varianti salvate.</p>
+          <p>42 ricette pronte (Pizze, Pani, Focacce, Lievitati, Torte e Biscotti) e le tue varianti salvate.</p>
         </button>
 
         <button class="menu-card" onclick="navigateTo('calc', 'params')">
@@ -719,10 +719,13 @@
       </div>
 
       <div class="card">
+        <div class="field" style="margin-bottom:10px">
+          <input type="text" id="recipeSearchInput" placeholder="🔍 Cerca tra le 42 ricette (es. napoletana, brioche, segale, frolla, biga)..." oninput="renderPresets()" />
+        </div>
         <div class="filter-pills">
-          <button class="pill active" onclick="setPresetFilter('all', this)">Tutti (16)</button>
-          <button class="pill" onclick="setPresetFilter('salato', this)">Salati (8)</button>
-          <button class="pill" onclick="setPresetFilter('dolce', this)">Dolci (8)</button>
+          <button class="pill active" onclick="setPresetFilter('all', this)">Tutti (42)</button>
+          <button class="pill" onclick="setPresetFilter('salato', this)">Salati (22)</button>
+          <button class="pill" onclick="setPresetFilter('dolce', this)">Dolci (20)</button>
           <button class="pill" onclick="setPresetFilter('saved', this)">⭐ Salvati (<span id="savedCount">0</span>)</button>
         </div>
         <div class="preset-grid" id="presetGrid"></div>
@@ -1067,61 +1070,153 @@
   <script>
     /* ======================== DATA: PRESETS (16) ======================== */
     const PRESETS = [
-      // SALATI (8)
+      // ===================== SALATI (22) =====================
       { id: 'pizza_tonda', cat: 'salato', name: 'Pizza Tonda Classica', portions: 4, weight: 260, hydration: 65, salt: 2.5, fat: 2, sugar: 0, eggs: 0, yeastType: 'fresh', method: 'fridge', hours: 18, fridgeHours: 14, temp: 22, prefPct: 40,
         flours: [{ name: 'Tipo 00 (W280)', pct: 85 }, { name: 'Semola Rimacinata', pct: 15 }],
         bakeTemp: 250, bakeMins: 10, bakeSupport: 'Pietra refrattaria / Teglia',
         bakeNotes: 'Preriscalda al massimo. Stendi lasciando il cornicione intatto, inforna con pomodoro e aggiungi mozzarella gli ultimi 3 min.' },
+      { id: 'pizza_napoletana', cat: 'salato', name: 'Pizza Napoletana Contemporanea', portions: 4, weight: 270, hydration: 70, salt: 2.8, fat: 0, sugar: 0, eggs: 0, yeastType: 'fresh', method: 'fridge', hours: 24, fridgeHours: 18, temp: 22, prefPct: 40,
+        flours: [{ name: 'Tipo 0 Forte (W340)', pct: 80 }, { name: 'Tipo 1', pct: 20 }],
+        bakeTemp: 450, bakeMins: 2, bakeSupport: 'Forno pizza / Pietra rovente',
+        bakeNotes: 'Autolisi 40 min. Staglio delicato senza sgonfiare i gas, stesura dal centro verso il bordo per cornicione pronunciato.' },
       { id: 'pizza_teglia', cat: 'salato', name: 'Pizza in Teglia Romana', portions: 2, weight: 600, hydration: 78, salt: 2.3, fat: 2.5, sugar: 0.5, eggs: 0, yeastType: 'fresh', method: 'fridge', hours: 28, fridgeHours: 24, temp: 22, prefPct: 40,
         flours: [{ name: 'Tipo 0 Forte (W340)', pct: 90 }, { name: 'Semola Rimacinata', pct: 10 }],
         bakeTemp: 250, bakeMins: 14, bakeSupport: 'Teglia ferro blu 30x40 cm',
         bakeNotes: 'Autolisi 45 min. Cuoci 10 min sulla base del forno con solo pomodoro, poi 3-4 min a metà altezza con mozzarella.' },
-      { id: 'pane_casereccio', cat: 'salato', name: 'Pane Casereccio Rustico', portions: 1, weight: 850, hydration: 72, salt: 2.1, fat: 0, sugar: 0.5, eggs: 0, yeastType: 'fresh', method: 'fridge', hours: 16, fridgeHours: 12, temp: 22, prefPct: 40,
-        flours: [{ name: 'Tipo 0 (W300)', pct: 80 }, { name: 'Tipo 1', pct: 20 }],
-        bakeTemp: 240, bakeMins: 45, bakeSupport: 'Pentola in ghisa / Refrattaria',
-        bakeNotes: 'Incisione (scarpatura) a 30-45°. 20 min a 240°C con vapore, poi 25 min a 200°C senza vapore.' },
-      { id: 'focaccia_genovese', cat: 'salato', name: 'Focaccia Morbida Genovese', portions: 1, weight: 750, hydration: 75, salt: 2.2, fat: 8, sugar: 1.5, eggs: 0, yeastType: 'fresh', method: 'direct', hours: 5, fridgeHours: 0, temp: 23, prefPct: 40,
-        flours: [{ name: 'Tipo 0 (W280)', pct: 85 }, { name: 'Manitoba', pct: 15 }],
-        bakeTemp: 230, bakeMins: 20, bakeSupport: 'Teglia ben oliata',
-        bakeNotes: 'Affonda i polpastrelli prima dell’ultima lievitazione e irrora con salamoia (acqua, olio EVO e sale).' },
-      { id: 'focaccia_barese', cat: 'salato', name: 'Focaccia Barese con Semola', portions: 1, weight: 650, hydration: 76, salt: 2.2, fat: 7, sugar: 1, eggs: 0, yeastType: 'fresh', method: 'direct', hours: 4.5, fridgeHours: 0, temp: 23, prefPct: 40,
-        flours: [{ name: 'Semola Rimacinata', pct: 50 }, { name: 'Tipo 0', pct: 50 }],
-        bakeTemp: 235, bakeMins: 22, bakeSupport: 'Teglia tonda unta',
-        bakeNotes: 'Condisci con pomodorini schiacciati, olive baresi, origano e abbondante olio EVO.' },
+      { id: 'pizza_pala', cat: 'salato', name: 'Pizza alla Pala Croccante', portions: 3, weight: 380, hydration: 76, salt: 2.4, fat: 2, sugar: 0.5, eggs: 0, yeastType: 'fresh', method: 'biga', hours: 24, fridgeHours: 18, temp: 22, prefPct: 40,
+        flours: [{ name: 'Tipo 0 Forte (W340)', pct: 85 }, { name: 'Semola Rimacinata', pct: 15 }],
+        bakeTemp: 280, bakeMins: 9, bakeSupport: 'Pietra refrattaria / Biscotto',
+        bakeNotes: 'Stendi allungata su spolvero di semola rimacinata e inforna direttamente sulla pietra caldissima.' },
       { id: 'pinsa_romana', cat: 'salato', name: 'Pinsa Romana Croccante', portions: 4, weight: 250, hydration: 80, salt: 2.3, fat: 2, sugar: 0, eggs: 0, yeastType: 'fresh', method: 'biga', hours: 36, fridgeHours: 30, temp: 21, prefPct: 40,
         flours: [{ name: 'Tipo 0 Forte (W340)', pct: 80 }, { name: 'Farina di Riso', pct: 10 }, { name: 'Semola Rimacinata', pct: 10 }],
         bakeTemp: 250, bakeMins: 12, bakeSupport: 'Pietra refrattaria rovente',
         bakeNotes: 'Usa acqua fredda da frigo. Stendi ovale su letto di farina di riso e cuoci su pietra.' },
+      { id: 'sfincione_palermitano', cat: 'salato', name: 'Sfincione Palermitano Alto', portions: 1, weight: 850, hydration: 72, salt: 2.2, fat: 6, sugar: 2, eggs: 0, yeastType: 'fresh', method: 'direct', hours: 4.5, fridgeHours: 0, temp: 23, prefPct: 40,
+        flours: [{ name: 'Semola Rimacinata', pct: 70 }, { name: 'Tipo 0 (W300)', pct: 30 }],
+        bakeTemp: 220, bakeMins: 25, bakeSupport: 'Teglia unta 30x40 cm',
+        bakeNotes: 'Impasto soffice e alto. Condisci con salsa di cipolle, pomodoro, caciocavallo, acciughe e pangrattato tostato.' },
+      { id: 'pane_casereccio', cat: 'salato', name: 'Pane Casereccio Rustico', portions: 1, weight: 850, hydration: 72, salt: 2.1, fat: 0, sugar: 0.5, eggs: 0, yeastType: 'fresh', method: 'fridge', hours: 16, fridgeHours: 12, temp: 22, prefPct: 40,
+        flours: [{ name: 'Tipo 0 (W300)', pct: 80 }, { name: 'Tipo 1', pct: 20 }],
+        bakeTemp: 240, bakeMins: 45, bakeSupport: 'Pentola in ghisa / Refrattaria',
+        bakeNotes: 'Incisione (scarpatura) a 30-45°. 20 min a 240°C con vapore, poi 25 min a 200°C senza vapore.' },
       { id: 'pane_integrale', cat: 'salato', name: 'Pane Integrale ai Cereali', portions: 1, weight: 800, hydration: 78, salt: 2.1, fat: 2, sugar: 1, eggs: 0, yeastType: 'fresh', method: 'direct', hours: 4.5, fridgeHours: 0, temp: 22, prefPct: 40,
-        flours: [{ name: 'Integrale Macinata Pietra', pct: 70 }, { name: 'Segale Integrale', pct: 15 }, { name: 'Tipo 0 Forte', pct: 15 }],
+        flours: [{ name: 'Integrale Macinata Pietra', pct: 70 }, { name: 'Segale Integrale', pct: 15 }, { name: 'Tipo 0 Forte (W340)', pct: 15 }],
         bakeTemp: 235, bakeMins: 50, bakeSupport: 'Stampo / Refrattaria',
         bakeNotes: 'Autolisi di 60-90 min per ammorbidire la crusca. 20 min a 235°C con vapore + 30 min a 195°C.' },
+      { id: 'pane_semola_altamura', cat: 'salato', name: 'Pane di Semola Tipo Altamura', portions: 1, weight: 900, hydration: 72, salt: 2.1, fat: 0, sugar: 0.5, eggs: 0, yeastType: 'sourdough', method: 'fridge', hours: 16, fridgeHours: 12, temp: 22, prefPct: 40,
+        flours: [{ name: 'Semola Rimacinata', pct: 100 }],
+        bakeTemp: 240, bakeMins: 50, bakeSupport: 'Pentola in ghisa / Refrattaria',
+        bakeNotes: 'Autolisi 60 min. Formaturo a pagnotta alta sovrapponendo i lembi. Vapore nei primi 20 min.' },
+      { id: 'pane_segale_nordico', cat: 'salato', name: 'Pane di Segale ai Semi in Cassetta', portions: 1, weight: 850, hydration: 80, salt: 2.2, fat: 2, sugar: 2, eggs: 0, yeastType: 'sourdough', method: 'direct', hours: 5, fridgeHours: 0, temp: 23, prefPct: 40,
+        flours: [{ name: 'Segale Integrale', pct: 65 }, { name: 'Tipo 0 Forte (W340)', pct: 35 }],
+        bakeTemp: 230, bakeMins: 55, bakeSupport: 'Stampo plumcake 25 cm',
+        bakeNotes: 'Non fare pieghe (impasto compatto). Cuoci 15 min a 230°C con vapore e 40 min a 190°C. Attendi 6h prima di tagliare.' },
+      { id: 'ciabatta_biga', cat: 'salato', name: 'Ciabatta Alveolata con Biga', portions: 4, weight: 220, hydration: 82, salt: 2.1, fat: 1.5, sugar: 0.5, eggs: 0, yeastType: 'fresh', method: 'biga', hours: 20, fridgeHours: 0, temp: 20, prefPct: 45,
+        flours: [{ name: 'Tipo 0 Forte (W340)', pct: 90 }, { name: 'Manitoba (W360)', pct: 10 }],
+        bakeTemp: 245, bakeMins: 22, bakeSupport: 'Pietra refrattaria con vapore',
+        bakeNotes: 'Taglia le ciabatte con tarocco infarinato senza sgonfiarle e capovolgile su pala prima di infornare con vapore.' },
+      { id: 'baguette_francese', cat: 'salato', name: 'Baguette Tradizione Francese', portions: 3, weight: 280, hydration: 73, salt: 2.0, fat: 0, sugar: 0, eggs: 0, yeastType: 'fresh', method: 'poolish', hours: 16, fridgeHours: 0, temp: 21, prefPct: 35,
+        flours: [{ name: 'Tipo 0 (W300)', pct: 90 }, { name: 'Tipo 1', pct: 10 }],
+        bakeTemp: 245, bakeMins: 22, bakeSupport: 'Teglia forata / Pietra + vapore',
+        bakeNotes: 'Incisioni oblique quasi parallele all’asse del filone. Molto vapore nei primi 12 min per crosta fine e dorata.' },
+      { id: 'michetta_soffiata', cat: 'salato', name: 'Michetta / Rosetta Soffiata', portions: 8, weight: 90, hydration: 55, salt: 2.0, fat: 1.5, sugar: 1, eggs: 0, yeastType: 'fresh', method: 'biga', hours: 18, fridgeHours: 0, temp: 20, prefPct: 60,
+        flours: [{ name: 'Manitoba (W360)', pct: 70 }, { name: 'Tipo 0 (W300)', pct: 30 }],
+        bakeTemp: 230, bakeMins: 18, bakeSupport: 'Teglia microforata + vapore',
+        bakeNotes: 'Dopo la formatura con stampo tagliapasta, fai lievitare capovolta su telo e rigira prima di infornare con vapore.' },
+      { id: 'pan_bauletto', cat: 'salato', name: 'Pan Bauletto Morbido', portions: 1, weight: 750, hydration: 58, salt: 1.9, fat: 8, sugar: 4, eggs: 0, yeastType: 'fresh', method: 'direct', hours: 4, fridgeHours: 0, temp: 23, prefPct: 40,
+        flours: [{ name: 'Tipo 0 (W300)', pct: 80 }, { name: 'Tipo 1', pct: 20 }],
+        bakeTemp: 185, bakeMins: 32, bakeSupport: 'Stampo plumcake imburrato',
+        bakeNotes: 'Stendi l’impasto a rettangolo, arrotola ben stretto e sigilla la chiusura sul fondo dello stampo.' },
+      { id: 'focaccia_genovese', cat: 'salato', name: 'Focaccia Morbida Genovese', portions: 1, weight: 750, hydration: 75, salt: 2.2, fat: 8, sugar: 1.5, eggs: 0, yeastType: 'fresh', method: 'direct', hours: 5, fridgeHours: 0, temp: 23, prefPct: 40,
+        flours: [{ name: 'Tipo 0 (W280)', pct: 85 }, { name: 'Manitoba (W360)', pct: 15 }],
+        bakeTemp: 230, bakeMins: 20, bakeSupport: 'Teglia ben oliata',
+        bakeNotes: 'Affonda i polpastrelli prima dell’ultima lievitazione e irrora con salamoia (acqua, olio EVO e sale).' },
+      { id: 'focaccia_barese', cat: 'salato', name: 'Focaccia Barese con Semola', portions: 1, weight: 650, hydration: 76, salt: 2.2, fat: 7, sugar: 1, eggs: 0, yeastType: 'fresh', method: 'direct', hours: 4.5, fridgeHours: 0, temp: 23, prefPct: 40,
+        flours: [{ name: 'Semola Rimacinata', pct: 50 }, { name: 'Tipo 0 (W300)', pct: 50 }],
+        bakeTemp: 235, bakeMins: 22, bakeSupport: 'Teglia tonda unta',
+        bakeNotes: 'Condisci con pomodorini schiacciati, olive baresi, origano e abbondante olio EVO.' },
+      { id: 'focaccia_patate', cat: 'salato', name: 'Focaccia Soffice alle Patate', portions: 1, weight: 800, hydration: 70, salt: 2.2, fat: 6, sugar: 1, eggs: 0, yeastType: 'fresh', method: 'direct', hours: 4, fridgeHours: 0, temp: 23, prefPct: 40,
+        flours: [{ name: 'Tipo 0 (W300)', pct: 85 }, { name: 'Fecola di Patate', pct: 15 }],
+        bakeTemp: 220, bakeMins: 22, bakeSupport: 'Teglia oliata 30x40 cm',
+        bakeNotes: 'Condisci con rosmarino, sale grosso e olio EVO. La fecola mantiene la mollica umida per giorni.' },
       { id: 'burger_buns', cat: 'salato', name: 'Burger Buns / Panini al Latte', portions: 8, weight: 85, hydration: 54, salt: 1.9, fat: 10, sugar: 6, eggs: 12, yeastType: 'fresh', method: 'direct', hours: 4, fridgeHours: 0, temp: 23, prefPct: 40,
         flours: [{ name: 'Tipo 0 (W300)', pct: 100 }],
         bakeTemp: 185, bakeMins: 16, bakeSupport: 'Teglia con carta forno',
         bakeNotes: 'Inserisci il burro morbido solo dopo l’incordatura. Spennella con tuorlo e latte prima di infornare.' },
+      { id: 'piadina_romagnola', cat: 'salato', name: 'Piadina Romagnola Tradizionale', portions: 6, weight: 120, hydration: 48, salt: 2.0, fat: 14, sugar: 0.5, eggs: 0, yeastType: 'none', method: 'direct', hours: 0, fridgeHours: 0, temp: 22, prefPct: 40,
+        flours: [{ name: 'Tipo 00 (W280)', pct: 100 }],
+        bakeTemp: 240, bakeMins: 3, bakeSupport: 'Testo / Padella antiaderente rovente',
+        bakeNotes: 'Fai riposare i panetti coperti 45 min per rilassare il glutine, stendi a 2-3 mm e cuoci 1,5 min per lato.' },
+      { id: 'tigelle_modenesi', cat: 'salato', name: 'Tigelle / Crescentine Modenesi', portions: 16, weight: 45, hydration: 52, salt: 2.0, fat: 8, sugar: 1, eggs: 0, yeastType: 'fresh', method: 'direct', hours: 2.5, fridgeHours: 0, temp: 23, prefPct: 40,
+        flours: [{ name: 'Tipo 00 (W280)', pct: 100 }],
+        bakeTemp: 210, bakeMins: 5, bakeSupport: 'Tigelliera / Padella pesante',
+        bakeNotes: 'Stendi a spessore 5-6 mm, coppa dischi da 8-9 cm e cuoci girando spesso finché risultano dorate.' },
+      { id: 'grissini_torinesi', cat: 'salato', name: 'Grissini Stirati a Mano', portions: 24, weight: 25, hydration: 52, salt: 2.2, fat: 10, sugar: 1.5, eggs: 0, yeastType: 'fresh', method: 'direct', hours: 2, fridgeHours: 0, temp: 23, prefPct: 40,
+        flours: [{ name: 'Tipo 0 (W300)', pct: 85 }, { name: 'Semola Rimacinata', pct: 15 }],
+        bakeTemp: 200, bakeMins: 14, bakeSupport: 'Teglia con carta forno',
+        bakeNotes: 'Forma un rettangolo unto, taglia strisce col tarocco e stirale dalle estremità senza mai reimpastarle.' },
+      { id: 'taralli_pugliesi', cat: 'salato', name: 'Taralli Pugliesi Friabili', portions: 30, weight: 20, hydration: 42, salt: 2.2, fat: 24, sugar: 0, eggs: 0, yeastType: 'none', method: 'direct', hours: 0, fridgeHours: 0, temp: 22, prefPct: 40,
+        flours: [{ name: 'Tipo 00 Debole', pct: 80 }, { name: 'Semola Rimacinata', pct: 20 }],
+        bakeTemp: 195, bakeMins: 28, bakeSupport: 'Bollitura + Teglia forno',
+        bakeNotes: 'Usa vino bianco secco al posto dell’acqua. Bolli i taralli 30 sec finché salgono a galla, asciugali e inforna.' },
 
-      // DOLCI (8)
+      // ===================== DOLCI (20) =====================
       { id: 'brioche_colazione', cat: 'dolce', name: 'Brioche Colazione Soffici', portions: 10, weight: 75, hydration: 48, salt: 1.7, fat: 18, sugar: 15, eggs: 20, yeastType: 'fresh', method: 'fridge', hours: 14, fridgeHours: 10, temp: 22, prefPct: 40,
-        flours: [{ name: 'Manitoba (W360)', pct: 80 }, { name: 'Tipo 00', pct: 20 }],
+        flours: [{ name: 'Manitoba (W360)', pct: 80 }, { name: 'Tipo 00 (W280)', pct: 20 }],
         bakeTemp: 175, bakeMins: 18, bakeSupport: 'Teglia con carta forno',
         bakeNotes: 'Incorda farina, latte, uova e lievito; aggiungi zucchero e infine burro a pomata. Spennella con tuorlo.' },
+      { id: 'brioche_siciliana', cat: 'dolce', name: 'Brioche Siciliana col Tuppo', portions: 8, weight: 90, hydration: 42, salt: 1.6, fat: 18, sugar: 16, eggs: 24, yeastType: 'fresh', method: 'fridge', hours: 14, fridgeHours: 10, temp: 22, prefPct: 40,
+        flours: [{ name: 'Manitoba (W360)', pct: 85 }, { name: 'Tipo 00 (W280)', pct: 15 }],
+        bakeTemp: 180, bakeMins: 16, bakeSupport: 'Teglia con carta forno',
+        bakeNotes: 'Aromatizza con miele, vaniglia e scorza d’arancia. Forma sfera da 75 g + pallina (tuppo) da 15 g incastrata al centro.' },
       { id: 'pan_brioche', cat: 'dolce', name: 'Pan Brioche / Treccia Dolce', portions: 1, weight: 750, hydration: 50, salt: 1.6, fat: 20, sugar: 16, eggs: 22, yeastType: 'fresh', method: 'fridge', hours: 14, fridgeHours: 10, temp: 22, prefPct: 40,
         flours: [{ name: 'Manitoba (W360)', pct: 100 }],
         bakeTemp: 170, bakeMins: 32, bakeSupport: 'Stampo plumcake imburrato',
         bakeNotes: 'Copri con stagnola a metà cottura se la superficie scurisce troppo.' },
+      { id: 'cornetti_sfogliati', cat: 'dolce', name: 'Cornetti Sfogliati da Bar', portions: 12, weight: 80, hydration: 50, salt: 1.8, fat: 52, sugar: 14, eggs: 10, yeastType: 'fresh', method: 'fridge', hours: 16, fridgeHours: 12, temp: 21, prefPct: 40,
+        flours: [{ name: 'Manitoba (W360)', pct: 80 }, { name: 'Tipo 00 (W280)', pct: 20 }],
+        bakeTemp: 185, bakeMins: 17, bakeSupport: 'Teglia forata con carta forno',
+        bakeNotes: 'Usa il 10% del burro nell’impasto e il restante 42% per l’incasso (1 piega a 4 + 1 piega a 3). Lievita max a 25°C.' },
+      { id: 'maritozzi_romani', cat: 'dolce', name: 'Maritozzi Romani per Panna', portions: 10, weight: 75, hydration: 46, salt: 1.5, fat: 15, sugar: 15, eggs: 18, yeastType: 'fresh', method: 'direct', hours: 4.5, fridgeHours: 0, temp: 23, prefPct: 40,
+        flours: [{ name: 'Manitoba (W360)', pct: 70 }, { name: 'Tipo 00 (W280)', pct: 30 }],
+        bakeTemp: 180, bakeMins: 15, bakeSupport: 'Teglia con carta forno',
+        bakeNotes: 'Forma filoncini ovali appuntiti. Appena sfornati spennella con sciroppo di acqua e zucchero (1:1) per renderli lucidi.' },
       { id: 'bomboloni', cat: 'dolce', name: 'Bomboloni / Krapfen Soffici', portions: 12, weight: 65, hydration: 50, salt: 1.6, fat: 15, sugar: 14, eggs: 18, yeastType: 'fresh', method: 'direct', hours: 4, fridgeHours: 0, temp: 24, prefPct: 40,
-        flours: [{ name: 'Manitoba (W360)', pct: 60 }, { name: 'Tipo 00', pct: 40 }],
+        flours: [{ name: 'Manitoba (W360)', pct: 60 }, { name: 'Tipo 00 (W280)', pct: 40 }],
         bakeTemp: 170, bakeMins: 4, bakeSupport: 'Frittura in olio 165-170°C',
         bakeNotes: 'Friggi 2 min per lato in olio a 168°C mantenendo la temperatura costante, poi passa nello zucchero semolato.' },
-      { id: 'cinnamon_rolls', cat: 'dolce', name: 'Cinnamon Rolls / Girelle', portions: 10, weight: 85, hydration: 52, salt: 1.6, fat: 16, sugar: 14, eggs: 15, yeastType: 'fresh', method: 'direct', hours: 3.5, fridgeHours: 0, temp: 23, prefPct: 40,
-        flours: [{ name: 'Manitoba (W360)', pct: 70 }, { name: 'Tipo 00', pct: 30 }],
+      { id: 'graffe_napoletane', cat: 'dolce', name: 'Graffe Napoletane con Patate', portions: 14, weight: 65, hydration: 45, salt: 1.5, fat: 14, sugar: 14, eggs: 20, yeastType: 'fresh', method: 'direct', hours: 3.5, fridgeHours: 0, temp: 24, prefPct: 40,
+        flours: [{ name: 'Manitoba (W360)', pct: 60 }, { name: 'Tipo 00 (W280)', pct: 25 }, { name: 'Fecola di Patate', pct: 15 }],
+        bakeTemp: 170, bakeMins: 3, bakeSupport: 'Frittura in olio 168°C',
+        bakeNotes: 'Aromatizza con scorza di limone e arancia. Friggi 90 sec per lato e rotola subito nello zucchero semolato.' },
+      { id: 'cinnamon_rolls', cat: 'dolce', name: 'Cinnamon Rolls / Girelle Cannella', portions: 10, weight: 85, hydration: 52, salt: 1.6, fat: 16, sugar: 14, eggs: 15, yeastType: 'fresh', method: 'direct', hours: 3.5, fridgeHours: 0, temp: 23, prefPct: 40,
+        flours: [{ name: 'Manitoba (W360)', pct: 70 }, { name: 'Tipo 00 (W280)', pct: 30 }],
         bakeTemp: 180, bakeMins: 20, bakeSupport: 'Teglia dai bordi alti',
         bakeNotes: 'Spalma burro morbido, zucchero di canna e cannella prima di arrotolare e tagliare.' },
+      { id: 'danubio_dolce', cat: 'dolce', name: 'Danubio Dolce Ripieno', portions: 1, weight: 850, hydration: 48, salt: 1.6, fat: 16, sugar: 14, eggs: 16, yeastType: 'fresh', method: 'direct', hours: 4, fridgeHours: 0, temp: 23, prefPct: 40,
+        flours: [{ name: 'Manitoba (W360)', pct: 75 }, { name: 'Tipo 00 (W280)', pct: 25 }],
+        bakeTemp: 175, bakeMins: 28, bakeSupport: 'Tortiera Ø 26 cm imburrata',
+        bakeNotes: 'Dividi in 12-14 palline da ~60 g, farcisci con crema o confettura, pirla bene e disponi a raggiera nella tortiera.' },
+      { id: 'babka_cioccolato', cat: 'dolce', name: 'Babka Intrecciata al Cioccolato', portions: 1, weight: 800, hydration: 46, salt: 1.6, fat: 22, sugar: 16, eggs: 22, yeastType: 'fresh', method: 'fridge', hours: 14, fridgeHours: 10, temp: 22, prefPct: 40,
+        flours: [{ name: 'Manitoba (W360)', pct: 100 }],
+        bakeTemp: 175, bakeMins: 35, bakeSupport: 'Stampo plumcake 26 cm',
+        bakeNotes: 'Stendi rettangolo, spalma crema gianduia/cacao, arrotola, taglia a metà per il lungo e intreccia con il taglio verso l’alto.' },
+      { id: 'angelica_dolce', cat: 'dolce', name: 'Torta Angelica Uvetta e Cioccolato', portions: 1, weight: 850, hydration: 45, salt: 1.5, fat: 22, sugar: 16, eggs: 22, yeastType: 'fresh', method: 'direct', hours: 4.5, fridgeHours: 0, temp: 23, prefPct: 40,
+        flours: [{ name: 'Manitoba (W360)', pct: 80 }, { name: 'Tipo 00 (W280)', pct: 20 }],
+        bakeTemp: 175, bakeMins: 30, bakeSupport: 'Teglia con carta forno (a corona)',
+        bakeNotes: 'Arrotola, incidi a metà per il lungo, intreccia e chiudi a ciambella. Glassa con zucchero a velo e albume.' },
+      { id: 'focaccia_dolce_uva', cat: 'dolce', name: 'Schiacciata Dolce con l’Uva', portions: 1, weight: 750, hydration: 62, salt: 1.5, fat: 10, sugar: 12, eggs: 0, yeastType: 'fresh', method: 'direct', hours: 4, fridgeHours: 0, temp: 23, prefPct: 40,
+        flours: [{ name: 'Tipo 0 (W300)', pct: 85 }, { name: 'Tipo 1', pct: 15 }],
+        bakeTemp: 200, bakeMins: 28, bakeSupport: 'Teglia oliata 30x40 cm',
+        bakeNotes: 'Dividi in 2 strati sottili farciti con uva nera (fragola/canaiolo), zucchero e un filo d’olio EVO sopra e dentro.' },
       { id: 'torta_margherita', cat: 'dolce', name: 'Torta Margherita Classica', portions: 1, weight: 700, hydration: 15, salt: 0.4, fat: 30, sugar: 35, eggs: 45, yeastType: 'chemical', method: 'direct', hours: 0, fridgeHours: 0, temp: 22, prefPct: 40,
         flours: [{ name: 'Tipo 00 Debole', pct: 65 }, { name: 'Fecola di Patate', pct: 35 }],
         bakeTemp: 170, bakeMins: 40, bakeSupport: 'Tortiera imburrata Ø 22-24 cm',
         bakeNotes: 'Monta a lungo uova e zucchero fino a composto chiaro e spumoso; incorpora le polveri setacciate dal basso verso l’alto.' },
+      { id: 'pan_di_spagna', cat: 'dolce', name: 'Pan di Spagna Alto per Torte', portions: 1, weight: 650, hydration: 0, salt: 0.3, fat: 0, sugar: 38, eggs: 62, yeastType: 'none', method: 'direct', hours: 0, fridgeHours: 0, temp: 22, prefPct: 40,
+        flours: [{ name: 'Tipo 00 Debole', pct: 75 }, { name: 'Fecola di Patate', pct: 25 }],
+        bakeTemp: 170, bakeMins: 35, bakeSupport: 'Tortiera Ø 22-24 cm imburrata',
+        bakeNotes: 'Zero lievito chimico: monta uova intere e zucchero per 15 min finché "scrivono", poi incorpora farina setacciata a mano.' },
       { id: 'plumcake_yogurt', cat: 'dolce', name: 'Plumcake Soffice allo Yogurt', portions: 1, weight: 720, hydration: 35, salt: 0.5, fat: 25, sugar: 32, eggs: 35, yeastType: 'chemical', method: 'direct', hours: 0, fridgeHours: 0, temp: 22, prefPct: 40,
         flours: [{ name: 'Tipo 00 Debole', pct: 80 }, { name: 'Fecola di Patate', pct: 20 }],
         bakeTemp: 175, bakeMins: 42, bakeSupport: 'Stampo plumcake 25 cm',
@@ -1130,10 +1225,22 @@
         flours: [{ name: 'Tipo 00 Debole', pct: 100 }],
         bakeTemp: 175, bakeMins: 40, bakeSupport: 'Stampo a ciambella Ø 24 cm',
         bakeNotes: 'Verifica la cottura al cuore con uno stecchino prima di sfornare.' },
-      { id: 'pasta_frolla', cat: 'dolce', name: 'Pasta Frolla Classica', portions: 1, weight: 600, hydration: 0, salt: 0.5, fat: 45, sugar: 35, eggs: 20, yeastType: 'none', method: 'direct', hours: 0, fridgeHours: 0, temp: 20, prefPct: 40,
+      { id: 'torta_mele', cat: 'dolce', name: 'Torta di Mele Soffice', portions: 1, weight: 750, hydration: 28, salt: 0.4, fat: 25, sugar: 32, eggs: 34, yeastType: 'chemical', method: 'direct', hours: 0, fridgeHours: 0, temp: 22, prefPct: 40,
+        flours: [{ name: 'Tipo 00 Debole', pct: 85 }, { name: 'Fecola di Patate', pct: 15 }],
+        bakeTemp: 175, bakeMins: 45, bakeSupport: 'Tortiera Ø 24 cm imburrata',
+        bakeNotes: 'Aggiungi 2-3 mele tagliate a fettine (metà nell’impasto e metà a raggiera in superficie) con cannella e limone.' },
+      { id: 'pasta_frolla', cat: 'dolce', name: 'Pasta Frolla Classica (Crostata)', portions: 1, weight: 600, hydration: 0, salt: 0.5, fat: 45, sugar: 35, eggs: 20, yeastType: 'none', method: 'direct', hours: 0, fridgeHours: 0, temp: 20, prefPct: 40,
         flours: [{ name: 'Tipo 00 Debole', pct: 85 }, { name: 'Farina di Mandorle', pct: 15 }],
         bakeTemp: 175, bakeMins: 22, bakeSupport: 'Tortiera crostata Ø 24-26 cm',
-        bakeNotes: 'Lavora velocemente burro freddo e farina (sabbiatura), aggiungi zucchero e tuorli. Riposo in frigo 1-2 ore prima di stendere.' }
+        bakeNotes: 'Lavora velocemente burro freddo e farina (sabbiatura), aggiungi zucchero e tuorli. Riposo in frigo 1-2 ore prima di stendere.' },
+      { id: 'frolla_montata', cat: 'dolce', name: 'Frolla Montata (Biscotti Sac à Poche)', portions: 24, weight: 22, hydration: 5, salt: 0.4, fat: 55, sugar: 35, eggs: 22, yeastType: 'none', method: 'direct', hours: 0, fridgeHours: 0, temp: 20, prefPct: 40,
+        flours: [{ name: 'Tipo 00 Debole', pct: 80 }, { name: 'Fecola di Patate', pct: 20 }],
+        bakeTemp: 180, bakeMins: 13, bakeSupport: 'Teglia con carta forno',
+        bakeNotes: 'Monta burro a pomata con zucchero a velo, unisci uova a temperatura ambiente e infine la farina. Riposo in frigo 30 min prima di infornare.' },
+      { id: 'cantucci_toscani', cat: 'dolce', name: 'Cantucci Toscani alle Mandorle', portions: 25, weight: 25, hydration: 0, salt: 0.4, fat: 10, sugar: 45, eggs: 35, yeastType: 'chemical', method: 'direct', hours: 0, fridgeHours: 0, temp: 22, prefPct: 40,
+        flours: [{ name: 'Tipo 00 Debole', pct: 100 }],
+        bakeTemp: 180, bakeMins: 30, bakeSupport: 'Doppia cottura su teglia',
+        bakeNotes: 'Aggiungi 40-50% di mandorle intere non pelate. Cuoci i filoncini 20 min a 180°C, taglia in diagonale e biscotta 10 min a 160°C.' }
     ];
 
     const FLOUR_OPTIONS = [
@@ -1220,6 +1327,7 @@
     function renderPresets() {
       document.getElementById('savedCount').textContent = savedRecipes.length;
       const grid = document.getElementById('presetGrid');
+      const q = (document.getElementById('recipeSearchInput')?.value || '').toLowerCase().trim();
       let list = [];
       if (currentFilter === 'saved') {
         list = savedRecipes;
@@ -1229,8 +1337,16 @@
         list = PRESETS.filter(p => p.cat === currentFilter);
       }
 
+      if (q) {
+        list = list.filter(p =>
+          p.name.toLowerCase().includes(q) ||
+          (p.bakeNotes && p.bakeNotes.toLowerCase().includes(q)) ||
+          (p.flours && p.flours.some(f => f.name.toLowerCase().includes(q)))
+        );
+      }
+
       if (list.length === 0) {
-        grid.innerHTML = '<div style="grid-column:1/-1;font-size:0.86rem;color:var(--text-muted);padding:12px">Nessuna ricetta salvata in questa categoria.</div>';
+        grid.innerHTML = '<div style="grid-column:1/-1;font-size:0.86rem;color:var(--text-muted);padding:12px">Nessuna ricetta trovata.</div>';
         return;
       }
 
