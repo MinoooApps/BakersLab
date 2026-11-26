@@ -648,7 +648,7 @@
   <header>
     <div class="header-inner">
       <div class="brand" onclick="navigateTo('home')">
-        <div class="brand-icon" style="padding:0;overflow:hidden;background:#fbf7ef"><img src="./icon-192.png" alt="Arte Bianca" style="width:100%;height:100%;object-fit:cover;display:block"/></div>
+        <div class="brand-icon" style="padding:0;overflow:hidden;background:#fbf5e8"><img src="./icon-192.png" alt="Arte Bianca" style="width:100%;height:100%;object-fit:cover;display:block"/></div>
         <div>
           <h1>Arte Bianca</h1>
           <small>Calcolatore Impasti &amp; Manuale</small>
@@ -657,10 +657,9 @@
 
       <div class="header-actions">
         <button class="btn btn-sm hidden" id="installAppBtn" onclick="triggerInstall()">📲 Installa</button>
-        <button class="btn btn-sm" onclick="openNotifModal()">
-          <span class="badge-dot" id="notifStatusDot"></span> 🔔
+        <button class="btn btn-sm" onclick="openNotifModal()" title="Impostazioni">
+          <span class="badge-dot" id="notifStatusDot"></span> 🔔 ⚙️
         </button>
-        <button class="btn btn-sm" id="kitchenBtn" onclick="toggleKitchenMode()">👨‍🍳 Cucina</button>
       </div>
     </div>
   </header>
@@ -1017,12 +1016,20 @@
     </button>
   </nav>
 
-  <!-- NOTIFICATION SETTINGS MODAL -->
+  <!-- SETTINGS MODAL -->
   <div class="modal-backdrop" id="notifModal">
     <div class="modal-box">
       <div class="card-title">
-        <span>🔔 Impostazioni Notifiche &amp; Avvisi</span>
+        <span>⚙️ Impostazioni App &amp; Notifiche</span>
         <button class="btn btn-sm" onclick="closeNotifModal()">✕</button>
+      </div>
+
+      <div class="switch-row">
+        <div>
+          <strong>Tema Scuro (Dark Mode)</strong>
+          <div style="font-size:0.78rem;color:var(--text-muted)">Attiva l'interfaccia scura ad alto contrasto per ridurre l'affaticamento visivo.</div>
+        </div>
+        <input type="checkbox" id="cfgDarkMode" onchange="toggleDarkModeFromSettings(this.checked)" />
       </div>
 
       <div class="switch-row">
@@ -1365,10 +1372,15 @@
       }
     }
 
-    function toggleKitchenMode() {
-      document.body.classList.toggle('kitchen-mode');
-      const active = document.body.classList.contains('kitchen-mode');
-      document.getElementById('kitchenBtn').classList.toggle('btn-primary', active);
+    function applyDarkMode(enabled) {
+      document.body.classList.toggle('kitchen-mode', !!enabled);
+      const chk = document.getElementById('cfgDarkMode');
+      if (chk) chk.checked = !!enabled;
+    }
+
+    function toggleDarkModeFromSettings(enabled) {
+      localStorage.setItem('ab_dark_mode', enabled ? '1' : '0');
+      applyDarkMode(enabled);
     }
 
     /* ======================== PRESETS ======================== */
@@ -1956,6 +1968,8 @@
 
     /* ======================== NOTIFICATION MODAL ======================== */
     function openNotifModal() {
+      const darkChk = document.getElementById('cfgDarkMode');
+      if (darkChk) darkChk.checked = document.body.classList.contains('kitchen-mode');
       document.getElementById('cfgRequireInteraction').checked = notifCfg.requireInteraction;
       document.getElementById('cfgSound').checked = notifCfg.sound;
       document.getElementById('cfgSmartPopups').checked = notifCfg.smartPopups;
@@ -2247,6 +2261,7 @@
     }
 
     /* ======================== INIT ======================== */
+    applyDarkMode(localStorage.getItem('ab_dark_mode') === '1');
     renderPresets();
     renderFlours();
     recalc();
