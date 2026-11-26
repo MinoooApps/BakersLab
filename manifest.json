@@ -1,6 +1,6 @@
 {
   "name": "Arte Bianca — Calcolatore Impasti & Manuale",
-  "short_name": "Arte Bianca",
+  "short_name": "BakersLab",
   "description": "Calcolatore professionale per impasti fatti in casa, timer multipli, avvisi intelligenti e Manuale Completo del Panificatore.",
   "start_url": "./index.html?v=18",
   "display": "standalone",
