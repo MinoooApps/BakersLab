@@ -1,11 +1,11 @@
-const CACHE_NAME = 'arte-bianca-pwa-v13';
+const CACHE_NAME = 'arte-bianca-pwa-v15';
 const ASSETS = [
   './',
   './index.html',
-  './manifest.json?v=13',
-  './icon.svg?v=13',
-  './icon-192.png?v=13',
-  './icon-512.png?v=13'
+  './manifest.json?v=15',
+  './icon.svg?v=15',
+  './icon-192.png?v=15',
+  './icon-512.png?v=15'
 ];
 
 self.addEventListener('install', (event) => {
