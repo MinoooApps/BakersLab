@@ -540,6 +540,42 @@
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.01); }
     }
+    .phase-plan-row {
+      border: 1px solid var(--border);
+      background: var(--surface-alt);
+      border-radius: 12px;
+      padding: 11px 14px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      transition: all 0.2s ease;
+    }
+    .phase-plan-row.started {
+      border-color: var(--primary);
+      background: var(--primary-light, rgba(180, 83, 9, 0.08));
+    }
+    .phase-plan-row.completed {
+      opacity: 0.72;
+    }
+    .phase-step-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      background: var(--primary);
+      color: #fff;
+      font-size: 0.78rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+    .phase-plan-row.completed .phase-step-badge {
+      background: var(--success, #15803d);
+    }
     .timer-clock {
       font-size: 1.5rem;
       font-weight: 800;
@@ -1084,7 +1120,7 @@
               <div style="display:flex;gap:6px;flex-wrap:wrap">
                 <button class="btn btn-sm" style="background:rgba(255,255,255,0.2);color:#fff;border-color:rgba(255,255,255,0.4)" onclick="resetIngredientChecks()" title="Deseleziona tutte le spunte ingredienti">☑️ Reset Spunte</button>
                 <button class="btn btn-sm" style="background:rgba(255,255,255,0.2);color:#fff;border-color:rgba(255,255,255,0.4)" onclick="copyRecipeText()">📋 Copia</button>
-                <button class="btn btn-sm" style="background:#fff;color:var(--primary-dark);border:none" onclick="loadRecipeTimers(); navigateTo('timers');">⏱️ Avvia Fasi</button>
+                <button class="btn btn-sm" style="background:#fff;color:var(--primary-dark);border:none" onclick="loadRecipeTimers(); navigateTo('timers');">⏱️ Fasi Ricetta</button>
               </div>
             </div>
           </div>
@@ -1109,9 +1145,17 @@
       <div class="section-header" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px">
         <div>
           <h2>Timer &amp; Fasi Lavorazione</h2>
-          <p>Avvia uno o più timer simultanei con avvisi sonori e notifiche.</p>
+          <p>Carica il piano fasi della ricetta e avvia ogni timer manualmente quando serve.</p>
         </div>
-        <button class="btn btn-sm btn-accent" onclick="loadRecipeTimers()">+ Carica Tutte le Fasi della Ricetta</button>
+        <button class="btn btn-sm btn-accent" onclick="loadRecipeTimers()">📋 Prepara Piano Fasi Ricetta</button>
+      </div>
+
+      <div class="card" id="recipePhasesCard">
+        <div class="card-title" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
+          <span>📋 Fasi della Ricetta (<span id="recipePhasesTitle">Nessuna ricetta caricata</span>)</span>
+          <button class="btn btn-sm" id="clearRecipePhasesBtn" style="display:none" onclick="clearRecipePhases()">Svuota Piano</button>
+        </div>
+        <div id="recipePhasesList"></div>
       </div>
 
       <div class="card">
@@ -1470,6 +1514,7 @@
     let currentFilter = 'all';
     let flours = [{ name: 'Tipo 00 (W280)', pct: 100 }];
     let timers = JSON.parse(localStorage.getItem('ab_timers') || '[]');
+    let recipePlan = JSON.parse(localStorage.getItem('ab_recipe_plan') || 'null');
     let savedRecipes = JSON.parse(localStorage.getItem('ab_saved_recipes') || '[]');
     let notifCfg = JSON.parse(localStorage.getItem('ab_notif_cfg') || '{"requireInteraction":true,"sound":true,"smartPopups":true}');
     let shownSmartTips = new Set();
@@ -2132,15 +2177,164 @@
       document.getElementById('customTimerName').value = '';
     }
 
+    function saveRecipePlan() {
+      localStorage.setItem('ab_recipe_plan', JSON.stringify(recipePlan));
+    }
+
     function loadRecipeTimers() {
+      const recipeTitle = (document.getElementById('recipeName')?.value || document.getElementById('outTitle')?.textContent || 'Ricetta Corrente').trim();
       const hyd = +document.getElementById('hydration').value;
+      const method = document.getElementById('methodType')?.value || 'direct';
+      const totalHours = +document.getElementById('totalHours')?.value || 4;
+      const fridgeHours = Math.min(totalHours, +document.getElementById('fridgeHours')?.value || 0);
       const bakeMins = +document.getElementById('bakeMins').value || 20;
-      if (hyd >= 72) addTimer('Autolisi', 45, false);
-      addTimer('Impastamento', 12, false);
-      if (hyd >= 68) addTimer('Pieghe di Rinforzo', 30, true);
-      addTimer('Puntata', 120, false);
-      addTimer('Appretto', 90, false);
-      addTimer('Cottura Forno', bakeMins, false);
+
+      const steps = [];
+      if (method === 'biga' || method === 'poolish') {
+        steps.push({ name: `Prefermento (${method.toUpperCase()})`, mins: 960, isFolds: false, note: 'Maturazione pre-impasto (16h)' });
+      }
+      if (hyd >= 72) {
+        steps.push({ name: 'Autolisi', mins: 45, isFolds: false, note: 'Riposo farina e acqua prima di lievito e sale' });
+      }
+      steps.push({ name: 'Impastamento', mins: 12, isFolds: false, note: 'Chiusura impasto e formazione maglia glutinica' });
+      if (hyd >= 68) {
+        steps.push({ name: 'Pieghe di Rinforzo', mins: 30, isFolds: true, note: 'Serie di pieghe ogni 30 min (usa + Giro)' });
+      }
+      const bulkMins = Math.max(30, Math.min(240, Math.round(Math.max(1, totalHours - fridgeHours) * 60 * 0.55)));
+      steps.push({ name: 'Puntata', mins: bulkMins, isFolds: false, note: 'Prima lievitazione in massa' });
+      if (fridgeHours > 0) {
+        steps.push({ name: 'Maturazione in Frigo', mins: Math.round(fridgeHours * 60), isFolds: false, note: `Riposo controllato a 4°C (${fridgeHours}h)` });
+      }
+      const finalProofMins = fridgeHours > 0 ? 120 : Math.max(30, Math.min(180, Math.round(Math.max(1, totalHours - fridgeHours) * 60 * 0.45)));
+      steps.push({ name: 'Appretto', mins: finalProofMins, isFolds: false, note: 'Lievitazione finale dei panetti / forma' });
+      steps.push({ name: 'Cottura Forno', mins: bakeMins, isFolds: false, note: `Forno a ${document.getElementById('bakeTemp')?.value || 220}°C` });
+
+      recipePlan = {
+        recipeTitle,
+        phases: steps.map((s, idx) => ({
+          id: 'rp_' + Date.now() + '_' + idx,
+          name: s.name,
+          mins: s.mins,
+          isFolds: s.isFolds,
+          note: s.note,
+          status: 'ready', // 'ready' | 'started' | 'done'
+          timerId: null
+        }))
+      };
+      saveRecipePlan();
+      renderRecipePhases();
+      showToast('Piano Fasi Pronto', `Caricate ${recipePlan.phases.length} fasi per "${recipeTitle}". Avvia ciascun timer quando sei pronto!`, false);
+    }
+
+    function startRecipePhase(phaseId) {
+      if (!recipePlan) return;
+      const phase = recipePlan.phases.find(p => p.id === phaseId);
+      if (!phase) return;
+      const now = Date.now();
+      const timerId = 't_' + now + '_' + Math.random().toString(36).slice(2, 6);
+      timers.push({
+        id: timerId,
+        name: phase.name,
+        durationSec: Math.round(phase.mins * 60),
+        endTime: now + Math.round(phase.mins * 60 * 1000),
+        pausedRemSec: null,
+        isFolds: phase.isFolds,
+        foldCount: phase.isFolds ? 1 : 0,
+        notified: false
+      });
+      phase.status = 'started';
+      phase.timerId = timerId;
+      saveTimers();
+      saveRecipePlan();
+      renderTimers();
+      renderRecipePhases();
+      showToast('Fase Avviata', `${phase.name} (${fmtDurationLabel(phase.mins)}) avviato.`, false);
+    }
+
+    function toggleRecipePhaseDone(phaseId) {
+      if (!recipePlan) return;
+      const phase = recipePlan.phases.find(p => p.id === phaseId);
+      if (!phase) return;
+      phase.status = phase.status === 'done' ? 'ready' : 'done';
+      saveRecipePlan();
+      renderRecipePhases();
+    }
+
+    function clearRecipePhases() {
+      recipePlan = null;
+      localStorage.removeItem('ab_recipe_plan');
+      renderRecipePhases();
+    }
+
+    function fmtDurationLabel(mins) {
+      if (mins >= 60) {
+        const h = Math.floor(mins / 60);
+        const m = mins % 60;
+        return m > 0 ? `${h}h ${m}m` : `${h}h`;
+      }
+      return `${mins} min`;
+    }
+
+    function renderRecipePhases() {
+      const titleEl = document.getElementById('recipePhasesTitle');
+      const listEl = document.getElementById('recipePhasesList');
+      const clearBtn = document.getElementById('clearRecipePhasesBtn');
+      if (!titleEl || !listEl) return;
+
+      if (!recipePlan || !recipePlan.phases || recipePlan.phases.length === 0) {
+        titleEl.textContent = 'Nessuna ricetta caricata';
+        if (clearBtn) clearBtn.style.display = 'none';
+        listEl.innerHTML = '<div style="font-size:0.85rem;color:var(--text-muted)">Apri una ricetta nella Scheda Bilancia e premi <strong>⏱️ Fasi Ricetta</strong> (oppure <strong>📋 Prepara Piano Fasi Ricetta</strong> qui sopra) per preparare l’elenco delle fasi da avviare una alla volta.</div>';
+        return;
+      }
+
+      titleEl.textContent = recipePlan.recipeTitle;
+      if (clearBtn) clearBtn.style.display = 'inline-flex';
+
+      listEl.innerHTML = recipePlan.phases.map((p, idx) => {
+        const activeTimer = p.timerId ? timers.find(t => t.id === p.timerId) : null;
+        let statusBadge = '';
+        let actionBtns = '';
+
+        if (activeTimer) {
+          statusBadge = `<span style="font-size:0.75rem;font-weight:700;color:var(--primary)">● Timer in corso</span>`;
+          actionBtns = `
+            <button class="btn btn-sm" onclick="startRecipePhase('${p.id}')" title="Riavvia un nuovo timer per questa fase">↻ Riavvia</button>
+            <button class="btn btn-sm" onclick="toggleRecipePhaseDone('${p.id}')" title="Segna come completata">✓</button>
+          `;
+        } else if (p.status === 'done') {
+          statusBadge = `<span style="font-size:0.75rem;font-weight:700;color:var(--success, #15803d)">✓ Completata</span>`;
+          actionBtns = `
+            <button class="btn btn-sm" onclick="startRecipePhase('${p.id}')">▶ Avvia</button>
+            <button class="btn btn-sm" onclick="toggleRecipePhaseDone('${p.id}')" title="Ripristina fase">↩</button>
+          `;
+        } else {
+          statusBadge = `<span style="font-size:0.75rem;color:var(--text-muted)">In attesa</span>`;
+          actionBtns = `
+            <button class="btn btn-sm btn-primary" onclick="startRecipePhase('${p.id}')">▶ Avvia (${fmtDurationLabel(p.mins)})</button>
+            <button class="btn btn-sm" onclick="toggleRecipePhaseDone('${p.id}')" title="Segna già fatta senza timer">✓</button>
+          `;
+        }
+
+        return `
+          <div class="phase-plan-row ${activeTimer ? 'started' : ''} ${p.status === 'done' ? 'completed' : ''}">
+            <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:210px">
+              <span class="phase-step-badge">${p.status === 'done' ? '✓' : idx + 1}</span>
+              <div>
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+                  <strong>${p.name}</strong>
+                  <span style="font-size:0.78rem;padding:2px 7px;border-radius:999px;background:var(--surface);border:1px solid var(--border)">${fmtDurationLabel(p.mins)}</span>
+                  ${statusBadge}
+                </div>
+                <div style="font-size:0.78rem;color:var(--text-muted);margin-top:2px">${p.note || ''}</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px">
+              ${actionBtns}
+            </div>
+          </div>
+        `;
+      }).join('');
     }
 
     function togglePauseTimer(id) {
@@ -2170,8 +2364,17 @@
 
     function removeTimer(id) {
       timers = timers.filter(x => x.id !== id);
+      if (recipePlan && recipePlan.phases) {
+        recipePlan.phases.forEach(p => {
+          if (p.timerId === id && p.status === 'started') {
+            p.status = 'done';
+          }
+        });
+        saveRecipePlan();
+      }
       saveTimers();
       renderTimers();
+      renderRecipePhases();
     }
 
     function saveTimers() {
@@ -2267,6 +2470,14 @@
     }
 
     function fireTimerAlert(t) {
+      if (recipePlan && recipePlan.phases) {
+        const linked = recipePlan.phases.find(p => p.timerId === t.id);
+        if (linked && linked.status === 'started') {
+          linked.status = 'done';
+          saveRecipePlan();
+          renderRecipePhases();
+        }
+      }
       playChime();
       const tip = PHASE_TIPS[t.name] || 'Controlla lo stato dell’impasto prima di passare alla fase successiva.';
       const bodyText = notifCfg.smartPopups ? `${t.name} completato! ${tip}` : `${t.name} completato!`;
@@ -2632,7 +2843,7 @@
         desc: 'La scheda bilancia calcola i grammi di ogni ingrediente (o le 2 fasi di Biga/Poolish) e segnala avvisi pratici.',
         bullets: [
           'Spunta ogni ingrediente mentre pesi sulla bilancia e usa "Reset Spunte" per ripartire.',
-          'Copia la ricetta in un clic o invia le fasi direttamente ai Timer.'
+          'Copia la ricetta in un clic o prepara il piano fasi da avviare manualmente nei Timer.'
         ]
       },
       {
@@ -2658,7 +2869,7 @@
     let tutIndex = 0;
 
     function openTutorialModal(force = false) {
-      if (!force && localStorage.getItem('ab_tutorial_seen_v18') === '1') return;
+      if (!force && localStorage.getItem('ab_tutorial_seen_v19') === '1') return;
       tutIndex = 0;
       renderTutorialStep();
       document.getElementById('tutorialModal').classList.add('open');
@@ -2667,7 +2878,7 @@
     function closeTutorialModal() {
       const m = document.getElementById('tutorialModal');
       if (m) m.classList.remove('open');
-      localStorage.setItem('ab_tutorial_seen_v18', '1');
+      localStorage.setItem('ab_tutorial_seen_v19', '1');
     }
 
     function stepTutorial(delta) {
@@ -2712,6 +2923,7 @@
     renderPresets();
     renderFlours();
     recalc();
+    renderRecipePhases();
     renderTimers();
     renderGuide();
     updateNotifDot();
