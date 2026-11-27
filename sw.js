@@ -1,11 +1,11 @@
-const CACHE_NAME = 'bakerslab-pwa-v29';
+const CACHE_NAME = 'bakerslab-pwa-v30';
 const ASSETS = [
   './',
   './index.html',
-  './manifest.json?v=18',
-  './icon.svg?v=18',
-  './icon-192.png?v=18',
-  './icon-512.png?v=18'
+  './manifest.json?v=30',
+  './icon.svg?v=30',
+  './icon-192.png?v=30',
+  './icon-512.png?v=30'
 ];
 
 self.addEventListener('install', (event) => {
