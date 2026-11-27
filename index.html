@@ -1042,6 +1042,17 @@
         display: none;
       }
     }
+    mark.guide-highlight {
+      background: #fde047;
+      color: #1c1917;
+      padding: 0 2px;
+      border-radius: 3px;
+      font-weight: 700;
+    }
+    body.kitchen-mode mark.guide-highlight {
+      background: #f59e0b;
+      color: #12100e;
+    }
     .calc-kpi-lbl {
       font-size: 0.7rem;
       font-weight: 700;
@@ -4388,8 +4399,66 @@
       renderGuide();
     }
 
+        function escapeRegExp(str) {
+      return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    function highlightManualText(rootEl, rawQuery) {
+      const q = (rawQuery || '').trim();
+      if (!q || !rootEl) return;
+      const tokens = q.split(/\s+/).filter(Boolean);
+      if (!tokens.length) return;
+      const pattern = new RegExp('(' + tokens.map(escapeRegExp).join('|') + ')', 'gi');
+      const skipTags = new Set(['SCRIPT', 'STYLE', 'INPUT', 'SELECT', 'TEXTAREA', 'BUTTON', 'MARK']);
+
+      const walker = document.createTreeWalker(rootEl, NodeFilter.SHOW_TEXT, {
+        acceptNode(node) {
+          if (!node.nodeValue || !node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
+          let parent = node.parentElement;
+          while (parent && parent !== rootEl) {
+            if (skipTags.has(parent.tagName)) return NodeFilter.FILTER_REJECT;
+            parent = parent.parentElement;
+          }
+          pattern.lastIndex = 0;
+          return pattern.test(node.nodeValue) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+        }
+      });
+
+      const matches = [];
+      let current;
+      while ((current = walker.nextNode())) {
+        matches.push(current);
+      }
+
+      matches.forEach(textNode => {
+        pattern.lastIndex = 0;
+        const text = textNode.nodeValue;
+        const frag = document.createDocumentFragment();
+        let lastIdx = 0;
+        let match;
+        while ((match = pattern.exec(text)) !== null) {
+          if (match.index > lastIdx) {
+            frag.appendChild(document.createTextNode(text.slice(lastIdx, match.index)));
+          }
+          const mark = document.createElement('mark');
+          mark.className = 'guide-highlight';
+          mark.textContent = match[0];
+          frag.appendChild(mark);
+          lastIdx = match.index + match[0].length;
+          if (match[0].length === 0) pattern.lastIndex++;
+        }
+        if (lastIdx < text.length) {
+          frag.appendChild(document.createTextNode(text.slice(lastIdx)));
+        }
+        if (textNode.parentNode) {
+          textNode.parentNode.replaceChild(frag, textNode);
+        }
+      });
+    }
+
     function renderGuide() {
-      const q = (document.getElementById('guideSearch').value || '').toLowerCase().trim();
+      const rawQ = (document.getElementById('guideSearch').value || '').trim();
+      const q = rawQ.toLowerCase();
       const area = document.getElementById('guideContentArea');
       const filtered = GUIDE_BLOCKS.filter(b => {
         const matchCat = currentGuideCat === 'all' || b.cat === currentGuideCat;
@@ -4403,6 +4472,10 @@
           ${b.html}
         </div>
       `).join('') || '<div class="card">Nessun risultato trovato per la ricerca.</div>';
+
+      if (rawQ) {
+        highlightManualText(area, rawQ);
+      }
 
       calcGuideTools();
     }
